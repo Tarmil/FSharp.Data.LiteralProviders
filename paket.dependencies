@@ -1,11 +1,17 @@
-frameworks netstandard2.0, netcoreapp2.2
+frameworks netstandard2.0
 storage none
 source https://api.nuget.org/v3/index.json
 
 nuget FSharp.Core >= 4.5.0 lowest_matching: true
-nuget Microsoft.NET.Test.Sdk 15.9.0
-nuget nunit 3.11.0
-nuget NUnit3TestAdapter 3.12.0
+
+group tests
+  frameworks netcoreapp2.2, net461, net472
+  storage none
+  source https://api.nuget.org/v3/index.json
+
+  nuget Microsoft.NET.Test.Sdk 15.9.0
+  nuget nunit 3.11.0
+  nuget NUnit3TestAdapter 3.12.0
 
 group tpsdk
   frameworks netstandard2.0
