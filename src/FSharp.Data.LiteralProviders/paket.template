@@ -1,0 +1,7 @@
+﻿type project
+files
+  ..\..\packages\tpsdk\NETStandard.Library.NETFramework\build\net461\lib\netstandard.dll ==> lib/netstandard2.0
+  ..\..\packages\tpsdk\NETStandard.Library.NETFramework\build\net461\lib\System.Reflection.dll ==> lib/netstandard2.0
+  ..\..\packages\tpsdk\NETStandard.Library.NETFramework\build\net461\lib\System.Runtime.dll ==> lib/netstandard2.0
+references
+  FSharp.Data.LiteralProviders.dll
