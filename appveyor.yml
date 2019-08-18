@@ -1,0 +1,27 @@
+version: build {build}
+
+image:
+- Visual Studio 2017
+
+build:
+  verbosity: minimal
+
+before_build:
+- ps: |
+    dotnet tool install nbgv --tool-path .paket
+    $env:SEMVER = .paket/nbgv get-version -v SemVer2
+    Update-AppveyorBuild -Version "$env:SEMVER ($env:APPVEYOR_BUILD_ID)"
+
+build_script:
+- ps: 'dotnet pack -c release -o $PWD/bin'
+
+test_script:
+- ps: |
+    dotnet test -c release --logger trx --results-directory $PWD/bin
+    $testResults = ls bin/*.trx | sort creationtime -desc | select -first 1
+    $wc = New-Object 'System.Net.WebClient'
+    $wc.UploadFile("https://ci.appveyor.com/api/testresults/mstest/$($env:APPVEYOR_JOB_ID)", $testResults)
+
+artifacts:
+  - path: bin\*.nupkg
+    name: nuget
