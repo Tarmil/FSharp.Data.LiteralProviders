@@ -20,7 +20,7 @@ module TextFile =
 
     [<Test>]
     let ``Text file is read`` () =
-        Assert.AreEqual("This is some\r\ntext content.", TextFile.subdir.``textFile.txt``.Text)
+        Assert.AreEqual("This is some\ntext content.", TextFile.subdir.``textFile.txt``.Text)
 
     [<Test>]
     let ``Binary file is recognized as not text`` () =
@@ -41,11 +41,11 @@ module TextFileOrDefault =
 
     [<Test>]
     let ``Text file without default contents`` () =
-        Assert.AreEqual("This is some\r\ntext content.", ``Text file without default``.Text)
+        Assert.AreEqual("This is some\ntext content.", ``Text file without default``.Text)
 
     [<Test>]
     let ``Text file with default contents`` () =
-        Assert.AreEqual("This is some\r\ntext content.", ``Text file with default``.Text)
+        Assert.AreEqual("This is some\ntext content.", ``Text file with default``.Text)
 
     type ``Non-existent without default`` = TextFileOrDefault<"NonExistentFile.txt">
     type ``Non-existent with default`` = TextFileOrDefault<"NonExistentFile.txt", "default contents">
