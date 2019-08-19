@@ -14,8 +14,8 @@ type Provider(config) as this =
     let createTypes() =
         [ EnvProvider.createEnv asm ns
           EnvProvider.createEnvOrDefault asm ns
-          FileProvider.createFile asm ns config.ResolutionFolder
-          FileProvider.createFileOrDefault asm ns config.ResolutionFolder
+          TextFileProvider.createFile asm ns config.ResolutionFolder
+          TextFileProvider.createFileOrDefault asm ns config.ResolutionFolder
         ]
 
     do this.AddNamespace(ns, createTypes())

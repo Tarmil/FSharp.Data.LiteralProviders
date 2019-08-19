@@ -6,7 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Env.fs" />
-    <Compile Include="File.fs" />
+    <Compile Include="TextFile.fs" />
     <Compile Include="Program.fs" />
     <Content Include="subdir\*.*" />
   </ItemGroup>

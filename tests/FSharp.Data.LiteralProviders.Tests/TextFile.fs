@@ -4,32 +4,32 @@ open System.IO
 open NUnit.Framework
 open FSharp.Data.LiteralProviders
 
-module File =
+module TextFile =
 
     [<Test>]
     let ``File in base dir exists`` () =
-        Assert.AreEqual("File.fs", File.``File.fs``.Name)
+        Assert.AreEqual("TextFile.fs", TextFile.``TextFile.fs``.Name)
 
     [<Test>]
     let ``File in subdir exists`` () =
-        Assert.AreEqual("textFile.txt", File.subdir.``textFile.txt``.Name)
+        Assert.AreEqual("textFile.txt", TextFile.subdir.``textFile.txt``.Name)
 
     [<Test>]
     let ``Full path is correct`` () =
-        Assert.AreEqual(Path.Combine(__SOURCE_DIRECTORY__, "subdir", "textFile.txt"), File.subdir.``textFile.txt``.Path)
+        Assert.AreEqual(Path.Combine(__SOURCE_DIRECTORY__, "subdir", "textFile.txt"), TextFile.subdir.``textFile.txt``.Path)
 
     [<Test>]
     let ``Text file is read`` () =
-        Assert.AreEqual("This is some\r\ntext content.", File.subdir.``textFile.txt``.Text)
+        Assert.AreEqual("This is some\r\ntext content.", TextFile.subdir.``textFile.txt``.Text)
 
     [<Test>]
     let ``Binary file is recognized as not text`` () =
-        File.subdir.``binFile.bin``.``Not a text file`` |> ignore
+        TextFile.subdir.``binFile.bin``.``Not a text file`` |> ignore
 
-module FileOrDefault =
+module TextFileOrDefault =
 
-    type ``Text file without default`` = FileOrDefault<"subdir/textFile.txt">
-    type ``Text file with default`` = FileOrDefault<"subdir/textFile.txt", "Invalid">
+    type ``Text file without default`` = TextFileOrDefault<"subdir/textFile.txt">
+    type ``Text file with default`` = TextFileOrDefault<"subdir/textFile.txt", "Invalid">
 
     [<Test>]
     let ``Text file without default exists`` () =
@@ -47,8 +47,8 @@ module FileOrDefault =
     let ``Text file with default contents`` () =
         Assert.AreEqual("This is some\r\ntext content.", ``Text file with default``.Text)
 
-    type ``Non-existent without default`` = FileOrDefault<"NonExistentFile.txt">
-    type ``Non-existent with default`` = FileOrDefault<"NonExistentFile.txt", "default contents">
+    type ``Non-existent without default`` = TextFileOrDefault<"NonExistentFile.txt">
+    type ``Non-existent with default`` = TextFileOrDefault<"NonExistentFile.txt", "default contents">
 
     [<Test>]
     let ``Non-existent without default doesn't exist`` () =

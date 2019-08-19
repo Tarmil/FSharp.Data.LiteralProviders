@@ -1,4 +1,4 @@
-﻿module internal FSharp.Data.LiteralProviders.FileProvider
+﻿module internal FSharp.Data.LiteralProviders.TextFileProvider
 
 open System.IO
 open System.Reflection
@@ -40,7 +40,7 @@ let createFile asm ns baseDir =
     let rec createForDir (path: string) (isRoot: bool) =
         let ty =
             if isRoot
-            then ProvidedTypeDefinition(asm, ns, "File", None)
+            then ProvidedTypeDefinition(asm, ns, "TextFile", None)
             else ProvidedTypeDefinition(Path.GetFileName path, None)
         ty.AddMembersDelayed(fun () ->
             [ for f in Directory.GetFiles(path) do yield createForFile f
@@ -50,7 +50,7 @@ let createFile asm ns baseDir =
     createForDir baseDir true
 
 let createFileOrDefault asm ns baseDir =
-    let ty = ProvidedTypeDefinition(asm, ns, "FileOrDefault", None)
+    let ty = ProvidedTypeDefinition(asm, ns, "TextFileOrDefault", None)
     ty.DefineStaticParameters(
         [ProvidedStaticParameter("Path", typeof<string>); ProvidedStaticParameter("DefaultValue", typeof<string>, "")],
         fun tyName args ->

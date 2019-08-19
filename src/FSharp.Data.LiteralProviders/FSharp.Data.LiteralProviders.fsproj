@@ -7,7 +7,7 @@
     <Compile Include="..\..\paket-files\tpsdk\fsprojects\FSharp.TypeProviders.SDK\src\ProvidedTypes.fsi" Link="ProvidedTypes.fsi" />
     <Compile Include="..\..\paket-files\tpsdk\fsprojects\FSharp.TypeProviders.SDK\src\ProvidedTypes.fs" Link="ProvidedTypes.fs" />
     <Compile Include="Env.fs" />
-    <Compile Include="File.fs" />
+    <Compile Include="TextFile.fs" />
     <Compile Include="Provider.fs" />
   </ItemGroup>
   <ItemGroup>
