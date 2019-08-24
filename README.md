@@ -97,3 +97,22 @@ open FSharp.Data.LiteralProviders
 /// or "1.0" if this file doesn't exist.
 let [<Literal>] version = TextFile<"build/version.txt", "1.0">.Text
 ```
+
+## BuildDate
+
+`FSharp.Data.LiteralProviders.BuildDate` contains the build time as a literal string in ISO-8601 format (["o" format](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings#Roundtrip)).
+
+```fsharp
+open FSharp.Data.LiteralProviders
+
+let utcBuildDate = BuildDate.Utc
+let localBuildDate = BuildDate.Local
+```
+
+It can be optionally parameterized by a [date format](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings).
+
+```fsharp
+open FSharp.Data.LiteralProviders
+
+let buildTime = BuildDate<"hh:mm:ss">.Utc
+```

@@ -8,6 +8,7 @@
     <Compile Include="..\..\paket-files\tpsdk\fsprojects\FSharp.TypeProviders.SDK\src\ProvidedTypes.fs" Link="ProvidedTypes.fs" />
     <Compile Include="Env.fs" />
     <Compile Include="TextFile.fs" />
+    <Compile Include="BuildDate.fs" />
     <Compile Include="Provider.fs" />
   </ItemGroup>
   <ItemGroup>
