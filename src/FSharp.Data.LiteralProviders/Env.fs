@@ -15,8 +15,7 @@ let createEnv asm ns =
         thisTy |> ty.AddMember
     ty
 
-let createEnvOrDefault asm ns =
-    let ty = ProvidedTypeDefinition(asm, ns, "EnvOrDefault", None)
+let addEnvOrDefault asm ns (ty: ProvidedTypeDefinition) =
     ty.DefineStaticParameters(
         [ProvidedStaticParameter("Name", typeof<string>); ProvidedStaticParameter("DefaultValue", typeof<string>, "")],
         fun tyName args ->
@@ -30,3 +29,7 @@ let createEnvOrDefault asm ns =
             ProvidedField.Literal("IsSet", typeof<bool>, isSet) |> ty.AddMember
             ty)
     ty
+
+let create asm ns =
+    createEnv asm ns
+    |> addEnvOrDefault asm ns

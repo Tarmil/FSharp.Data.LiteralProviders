@@ -31,17 +31,15 @@ type Sql = SqlProvider<Common.DatabaseProviderTypes.MSSQLSERVER,
                        Env.CONNECTION_STRING.Value>
 ```
 
-Note that `Env` fails to compile if the environment variable is not set.
+Note that when called this way, `Env` fails to compile if the environment variable is not set.
 
-## EnvOrDefault
-
-Like `Env`, `EnvOrDefault` contains literals for environment variables during compile time.
-However, `EnvOrDefault` takes the variable's name as a string parameter, and returns the empty string if the variable is not set.
+Alternatively, the environment variable's name can be passed as a string parameter.
+In this case, `Env` returns the empty string if the variable is not set.
 
 ```fsharp
 open FSharp.Data.LiteralProviders
 
-let vsVersion = EnvOrDefault<"VisualStudioEdition">.Value
+let vsVersion = Env<"VisualStudioEdition">.Value
 
 match vsVersion with
 | "" -> printfn "This program wasn't compiled with Visual Studio."
@@ -55,7 +53,7 @@ open FSharp.Data.Sql
 open FSharp.Data.LiteralProviders
 
 let [<Literal>] connString =
-    EnvOrDefault<"CONNECTION_STRING", "Server=localhost;Integrated Security=true">.Value
+    Env<"CONNECTION_STRING", "Server=localhost;Integrated Security=true">.Value
 
 type Sql = SqlProvider<Common.DatabaseProviderTypes.MSSQLSERVER, connString>
 ```
@@ -64,8 +62,8 @@ type Sql = SqlProvider<Common.DatabaseProviderTypes.MSSQLSERVER, connString>
 >
 > ```fsharp
 > type Sql = SqlProvider<Common.DatabaseProviderTypes.MSSQLSERVER,
->                        const(EnvOrDefault<"CONNECTION_STRING",
->                                           "Server=localhost;Integrated Security=true">)>.Value
+>                        const(Env<"CONNECTION_STRING",
+>                                  "Server=localhost;Integrated Security=true">)>.Value
 > ```
 
 ## TextFile
@@ -79,17 +77,15 @@ open FSharp.Data.LiteralProviders
 let [<Literal>] version = TextFile.build.``version.txt``.Text
 ```
 
-## TextFileOrDefault
-
-Like `TextFile`, `TextFileOrDefault` contains literals that are read from text files during compilation.
-However, `TextFileOrDefault` takes the file path as a string parameter, and returns the empty string if the file is not found or is not a text file.
+Alternatively, the file path can be passed as a string parameter.
+In this case, `TextFile` returns the empty string if the file doesn't exist.
 
 ```fsharp
 open FSharp.Data.LiteralProviders
 
 /// The compile-time contents of the file <projectFolder>/build/version.txt
 /// or "" if this file doesn't exist.
-let [<Literal>] version = TextFileOrDefault<"build/version.txt">.Text
+let [<Literal>] version = TextFile<"build/version.txt">.Text
 ```
 
 You can pass a second parameter that will be used as the default value instead of the empty string.
@@ -99,5 +95,5 @@ open FSharp.Data.LiteralProviders
 
 /// The compile-time contents of the file <projectFolder>/build/version.txt
 /// or "1.0" if this file doesn't exist.
-let [<Literal>] version = TextFileOrDefault<"build/version.txt", "1.0">.Text
+let [<Literal>] version = TextFile<"build/version.txt", "1.0">.Text
 ```

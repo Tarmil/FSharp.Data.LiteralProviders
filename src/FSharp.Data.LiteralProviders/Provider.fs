@@ -12,11 +12,8 @@ type Provider(config) as this =
     let asm = Assembly.GetExecutingAssembly()
 
     let createTypes() =
-        [ EnvProvider.createEnv asm ns
-          EnvProvider.createEnvOrDefault asm ns
-          TextFileProvider.createFile asm ns config.ResolutionFolder
-          TextFileProvider.createFileOrDefault asm ns config.ResolutionFolder
-        ]
+        [ EnvProvider.create asm ns
+          TextFileProvider.create asm ns config.ResolutionFolder ]
 
     do this.AddNamespace(ns, createTypes())
 

@@ -49,8 +49,7 @@ let createFile asm ns baseDir =
 
     createForDir baseDir true
 
-let createFileOrDefault asm ns baseDir =
-    let ty = ProvidedTypeDefinition(asm, ns, "TextFileOrDefault", None)
+let addFileOrDefault asm ns baseDir (ty: ProvidedTypeDefinition) =
     ty.DefineStaticParameters(
         [ProvidedStaticParameter("Path", typeof<string>); ProvidedStaticParameter("DefaultValue", typeof<string>, "")],
         fun tyName args ->
@@ -68,3 +67,7 @@ let createFileOrDefault asm ns baseDir =
                       ProvidedField.Literal("Text", typeof<string>, args.[1]) ])
             ty)
     ty
+
+let create asm ns baseDir =
+    createFile asm ns baseDir
+    |> addFileOrDefault asm ns baseDir
