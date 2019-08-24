@@ -58,7 +58,7 @@ let [<Literal>] connString =
 type Sql = SqlProvider<Common.DatabaseProviderTypes.MSSQLSERVER, connString>
 ```
 
-> Tip: to pass `EnvOrDefault` directly to another type provider without binding it as a `let [<Literal>]`, use the `const` operator:
+> Tip: to pass `Env` directly to another type provider without binding it as a `let [<Literal>]`, use the `const` operator:
 >
 > ```fsharp
 > type Sql = SqlProvider<Common.DatabaseProviderTypes.MSSQLSERVER,
@@ -105,8 +105,8 @@ let [<Literal>] version = TextFile<"build/version.txt", "1.0">.Text
 ```fsharp
 open FSharp.Data.LiteralProviders
 
-let utcBuildDate = BuildDate.Utc
-let localBuildDate = BuildDate.Local
+let utcBuildDate = BuildDate.Utc      // "2019-08-24T19:45:03.2279236Z"
+let localBuildDate = BuildDate.Local  // "2019-08-24T21:45:03.2279236+02:00"
 ```
 
 It can be optionally parameterized by a [date format](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings).
@@ -114,5 +114,5 @@ It can be optionally parameterized by a [date format](https://docs.microsoft.com
 ```fsharp
 open FSharp.Data.LiteralProviders
 
-let buildTime = BuildDate<"hh:mm:ss">.Utc
+let buildTime = BuildDate<"hh:mm:ss">.Utc  // "21:45:03"
 ```
