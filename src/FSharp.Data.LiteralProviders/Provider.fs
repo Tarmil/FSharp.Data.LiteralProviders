@@ -1,22 +1,15 @@
 ﻿namespace FSharp.Data.LiteralProviders
 
-open System.Reflection
 open FSharp.Core.CompilerServices
-open ProviderImplementation.ProvidedTypes
+open ProviderImplementation.ProvidedTypes.Functional
 
 [<TypeProvider>]
-type Provider(config) as this =
-    inherit TypeProviderForNamespaces(config)
-
-    let ns = "FSharp.Data.LiteralProviders"
-    let asm = Assembly.GetExecutingAssembly()
-
-    let createTypes() =
+type Provider(config) =
+    inherit FunctionalProvider(config, fun asm ->
+        let ns = "FSharp.Data.LiteralProviders"
         [ EnvProvider.create asm ns
           TextFileProvider.create asm ns config.ResolutionFolder
-          BuildDateProvider.create asm ns ]
-
-    do this.AddNamespace(ns, createTypes())
+          BuildDateProvider.create asm ns ])
 
 [<assembly:TypeProviderAssembly>]
 do ()

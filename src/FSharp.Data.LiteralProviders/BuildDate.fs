@@ -1,26 +1,25 @@
 ﻿module internal FSharp.Data.LiteralProviders.BuildDateProvider
 
 open System
+open System.Reflection
 open ProviderImplementation.ProvidedTypes
+open ProviderImplementation.ProvidedTypes.Functional
 
-let private addFields (ty: ProvidedTypeDefinition) (format: string) =
-    ProvidedField.Literal("Utc", typeof<string>, DateTime.UtcNow.ToString(format)) |> ty.AddMember
-    ProvidedField.Literal("Local", typeof<string>, DateTime.Now.ToString(format)) |> ty.AddMember
+let private fields (format: string) : list<MemberInfo> =
+    [ literal "Utc" (DateTime.UtcNow.ToString format)
+      literal "Local" (DateTime.Now.ToString format) ]
 
 let createBuildDate asm ns =
-    let ty = ProvidedTypeDefinition(asm, ns, "BuildDate", None)
-    addFields ty "o"
-    ty
+    ProvidedTypeDefinition(asm, ns, "BuildDate", None)
+    |> withMembers (fields "o")
 
-let addWithFormat asm ns (ty: ProvidedTypeDefinition) =
-    ty.DefineStaticParameters(
-        [ProvidedStaticParameter("Format", typeof<string>)],
-        fun tyName args ->
-            let ty = ProvidedTypeDefinition(asm, ns, tyName, None)
+let addWithFormat asm ns =
+    withStaticParameters
+        [ ProvidedStaticParameter("Format", typeof<string>) ]
+        (fun tyName args ->
             let format = args.[0] :?> string
-            addFields ty format
-            ty)
-    ty
+            ProvidedTypeDefinition(asm, ns, tyName, None)
+            |> withMembers (fields format))
 
 let create asm ns =
     createBuildDate asm ns
