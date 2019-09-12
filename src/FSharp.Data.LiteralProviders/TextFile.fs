@@ -28,7 +28,7 @@ let private fileMembers (path: string) (name: string) =
       | None ->
         yield literal "Not a text file" "" ]
 
-let createFile asm ns baseDir =
+let create asm ns baseDir =
     let createForFile (path: string) =
         let name = Path.GetFileName path
         ProvidedTypeDefinition(name, None)
@@ -43,13 +43,10 @@ let createFile asm ns baseDir =
               for d in Directory.GetDirectories(path) do yield createForDir d false ])
 
     createForDir baseDir true
-
-let addFileOrDefault asm ns baseDir =
-    withStaticParameters
-        [ ProvidedStaticParameter("Path", typeof<string>)
-          ProvidedStaticParameter("DefaultValue", typeof<string>, "") ]
-        (fun tyName args ->
-            let path = Path.Combine(baseDir, args.[0] :?> string)
+    |> withTypedStaticParameters
+        (mandatory "Path", optional "DefaultValue" "")
+        (fun tyName (path, defaultValue) ->
+            let path = Path.Combine(baseDir, path)
             let name = Path.GetFileName path
             let exists = File.Exists(path)
             ProvidedTypeDefinition(asm, ns, tyName, None)
@@ -60,8 +57,4 @@ let addFileOrDefault asm ns baseDir =
                 else
                     [ literal "Path" path
                       literal "Name" name
-                      literal "Text" (args.[1] :?> string) ]))
-
-let create asm ns baseDir =
-    createFile asm ns baseDir
-    |> addFileOrDefault asm ns baseDir
+                      literal "Text" defaultValue ]))
