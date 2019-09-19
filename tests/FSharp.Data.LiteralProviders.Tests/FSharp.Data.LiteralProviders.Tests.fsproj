@@ -10,6 +10,7 @@
     <Compile Include="BuildDate.fs" />
     <Compile Include="Program.fs" />
     <Content Include="subdir\*.*" />
+    <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\FSharp.Data.LiteralProviders\FSharp.Data.LiteralProviders.fsproj" />

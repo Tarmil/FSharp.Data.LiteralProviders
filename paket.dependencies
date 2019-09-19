@@ -20,4 +20,6 @@ group tpsdk
 
   github fsprojects/FSharp.TypeProviders.SDK src/ProvidedTypes.fsi
   github fsprojects/FSharp.TypeProviders.SDK src/ProvidedTypes.fs
+  github Tarmil/FSharp.TypeProviders.SDK.Functional src/ProvidedTypes.Functional.fsi
+  github Tarmil/FSharp.TypeProviders.SDK.Functional src/ProvidedTypes.Functional.fs
   nuget NETStandard.Library.NETFramework

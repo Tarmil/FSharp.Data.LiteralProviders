@@ -7,3 +7,5 @@ packages/
 **/[Oo]bj/
 **/[Bb]in/
 .vs/
+.ionide/
+*.user
