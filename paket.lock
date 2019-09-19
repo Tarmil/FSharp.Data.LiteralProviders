@@ -302,9 +302,9 @@ NUGET
       System.Runtime.InteropServices (>= 4.3) - restriction: || (&& (== net461) (< net45)) (&& (== net472) (< net45)) (== netcoreapp2.2)
       System.Threading (>= 4.3) - restriction: || (&& (== net461) (< net45)) (&& (== net472) (< net45)) (== netcoreapp2.2)
     System.Runtime.Loader (4.3) - restriction: || (&& (== net461) (>= netcoreapp1.0)) (&& (== net472) (>= netcoreapp1.0)) (== netcoreapp2.2)
-      System.IO (>= 4.3) - restriction: || (&& (== net461) (>= netstandard1.5)) (&& (== net472) (< net462)) (== netcoreapp2.2)
-      System.Reflection (>= 4.3) - restriction: || (&& (== net461) (>= netstandard1.5)) (&& (== net472) (< net462)) (== netcoreapp2.2)
-      System.Runtime (>= 4.3) - restriction: || (&& (== net461) (>= netstandard1.5)) (&& (== net472) (< net462)) (== netcoreapp2.2)
+      System.IO (>= 4.3) - restriction: || (&& (== net461) (== net472)) (&& (== net461) (>= netstandard1.5)) (&& (== net472) (< net462)) (== netcoreapp2.2)
+      System.Reflection (>= 4.3) - restriction: || (&& (== net461) (== net472)) (&& (== net461) (>= netstandard1.5)) (&& (== net472) (< net462)) (== netcoreapp2.2)
+      System.Runtime (>= 4.3) - restriction: || (&& (== net461) (== net472)) (&& (== net461) (>= netstandard1.5)) (&& (== net472) (< net462)) (== netcoreapp2.2)
     System.Runtime.Serialization.Json (4.3) - restriction: || (&& (== net461) (>= netcoreapp1.0)) (&& (== net472) (>= netcoreapp1.0)) (== netcoreapp2.2)
       System.IO (>= 4.3) - restriction: || (&& (== net461) (< net45)) (&& (== net472) (< net45)) (== netcoreapp2.2)
       System.Private.DataContractSerialization (>= 4.3) - restriction: || (&& (== net461) (< net45)) (&& (== net472) (< net45)) (== netcoreapp2.2)
@@ -431,3 +431,6 @@ GITHUB
   remote: fsprojects/FSharp.TypeProviders.SDK
     src/ProvidedTypes.fs (322cbb6be787f6f849ba5d5ff483c8f3639cd15c)
     src/ProvidedTypes.fsi (322cbb6be787f6f849ba5d5ff483c8f3639cd15c)
+  remote: Tarmil/FSharp.TypeProviders.SDK.Functional
+    src/ProvidedTypes.Functional.fs (041c3abe3f4de4efe560c09ebeba8ea9e69f6df4)
+    src/ProvidedTypes.Functional.fsi (041c3abe3f4de4efe560c09ebeba8ea9e69f6df4)

@@ -6,7 +6,8 @@
   <ItemGroup>
     <Compile Include="..\..\paket-files\tpsdk\fsprojects\FSharp.TypeProviders.SDK\src\ProvidedTypes.fsi" Link="ProvidedTypes.fsi" />
     <Compile Include="..\..\paket-files\tpsdk\fsprojects\FSharp.TypeProviders.SDK\src\ProvidedTypes.fs" Link="ProvidedTypes.fs" />
-    <Compile Include="ProvidedTypes.Functional.fs" />
+    <Compile Include="..\..\paket-files\tpsdk\tarmil\FSharp.TypeProviders.SDK.Functional\src\ProvidedTypes.Functional.fsi" Link="ProvidedTypes.Functional.fsi" />
+    <Compile Include="..\..\paket-files\tpsdk\tarmil\FSharp.TypeProviders.SDK.Functional\src\ProvidedTypes.Functional.fs" Link="ProvidedTypes.Functional.fs" />
     <Compile Include="Env.fs" />
     <Compile Include="TextFile.fs" />
     <Compile Include="BuildDate.fs" />

@@ -1,7 +1,7 @@
 ﻿namespace FSharp.Data.LiteralProviders
 
 open FSharp.Core.CompilerServices
-open ProviderImplementation.ProvidedTypes.Functional
+open ProviderImplementation.ProvidedTypes
 
 [<TypeProvider>]
 type Provider(config) =
