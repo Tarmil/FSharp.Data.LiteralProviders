@@ -1,11 +1,11 @@
-frameworks netstandard2.0
+frameworks net45, netstandard2.0
 storage none
 source https://api.nuget.org/v3/index.json
 
 nuget FSharp.Core >= 4.5.0 lowest_matching: true
 
 group tests
-  frameworks netcoreapp2.2, net461, net472
+  frameworks netcoreapp2.2, net461, net472, net45
   storage none
   source https://api.nuget.org/v3/index.json
 
@@ -14,7 +14,7 @@ group tests
   nuget NUnit3TestAdapter 3.12.0
 
 group tpsdk
-  frameworks netstandard2.0
+  frameworks netstandard2.0, net45
   storage packages
   source https://api.nuget.org/v3/index.json
 
