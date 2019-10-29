@@ -13,7 +13,9 @@ before_build:
     Update-AppveyorBuild -Version "$env:SEMVER ($env:APPVEYOR_BUILD_ID)"
 
 build_script:
-- ps: 'dotnet pack -c release -o $PWD/bin'
+- ps: | 
+    dotnet build -c release
+    .\.paket\paket.exe pack $PWD/bin
 
 test_script:
 - ps: |
