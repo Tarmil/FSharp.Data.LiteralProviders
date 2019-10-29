@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "paket": {
+      "version": "5.227.0",
+      "commands": [
+        "paket"
+      ]
+    },
+    "nbgv": {
+      "version": "3.0.26",
+      "commands": [
+        "nbgv"
+      ]
+    }
+  }
+}

@@ -1,38 +1,30 @@
 version: build {build}
 
 image:
-- Visual Studio 2017
+- Visual Studio 2019
 
 build:
   verbosity: minimal
 
 before_build:
 - ps: |
-    dotnet tool install nbgv --tool-path .paket
-    $env:SEMVER = .paket/nbgv get-version -v SemVer2
+    dotnet tool restore
+    $env:SEMVER = dotnet nbgv get-version -v SemVer2
     Update-AppveyorBuild -Version "$env:SEMVER ($env:APPVEYOR_BUILD_ID)"
+    dotnet paket restore
 
 build_script:
 - ps: | 
     dotnet build -c release
-    .\.paket\paket.exe pack $PWD/bin --version $env:SEMVER
+    dotnet paket pack $PWD/bin --version $env:SEMVER
 
 test_script:
 - ps: |
-    # Run tests
     dotnet test -c release --logger trx --results-directory $PWD/bin
-    $testResults = ls bin/*.trx | sort creationtime -desc | select -first 1
-
-    # Upload results to AppVeyor
-    $wc = New-Object System.Net.WebClient
-    $wc.UploadFile("https://ci.appveyor.com/api/testresults/mstest/$($env:APPVEYOR_JOB_ID)", $testResults)
-
-    # Fail if any tests failed (see https://github.com/Microsoft/vstest/issues/1624#issuecomment-394015083)
-    $xml = [Xml](get-content $testResults)
-    $ns = New-Object System.Xml.XmlNamespaceManager($xml.NameTable)
-    $ns.AddNamespace("ns", "http://microsoft.com/schemas/VisualStudio/TeamTest/2010")
-    $failCount = $xml.SelectSingleNode("//ns:ResultSummary/ns:Counters", $ns).failed
-    if ($failCount -gt 0) { throw "$failCount tests failed" }
+    $failed = $LASTEXITCODE -ne 0
+    $url = "https://ci.appveyor.com/api/testresults/mstest/$env:APPVEYOR_JOB_ID"
+    ls bin/*.trx | % { (new-object System.Net.WebClient).UploadFile($url, $_) }
+    if ($failed) { throw "$failCount tests failed" }
 
 artifacts:
   - path: bin\*.nupkg
