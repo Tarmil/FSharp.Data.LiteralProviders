@@ -63,7 +63,7 @@ type Sql = SqlProvider<Common.DatabaseProviderTypes.MSSQLSERVER, connString>
 > ```fsharp
 > type Sql = SqlProvider<Common.DatabaseProviderTypes.MSSQLSERVER,
 >                        const(Env<"CONNECTION_STRING",
->                                  "Server=localhost;Integrated Security=true">)>.Value
+>                                  "Server=localhost;Integrated Security=true">.Value)>
 > ```
 
 ## TextFile
