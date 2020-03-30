@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0;net461;net472;net45</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.0;net461;net472;</TargetFrameworks>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
@@ -9,6 +9,7 @@
     <Compile Include="TextFile.fs" />
     <Compile Include="BuildDate.fs" />
     <Compile Include="Program.fs" />
+    <Content Include=".env" />
     <Content Include="subdir\*.*" />
   </ItemGroup>
   <ItemGroup>

@@ -2,7 +2,27 @@
 
 open System
 open System.Collections
+open System.IO
 open ProviderImplementation.ProvidedTypes
+
+let DefaultEnvFileName = ".env"
+let LevelsToSearchForEnvFile = 3
+
+let searchAndLoadEnvFile (baseDir) =
+    let envFile =
+        seq {
+            let mutable currentDirectory = DirectoryInfo(baseDir)
+            
+            for _ in [1..LevelsToSearchForEnvFile] do
+                yield! currentDirectory.EnumerateFiles(DefaultEnvFileName, SearchOption.TopDirectoryOnly)
+                currentDirectory <- currentDirectory.Parent
+        }
+        |> Seq.map (fun f -> f.FullName)
+        |> Seq.tryHead
+                 
+    match envFile with
+    | Some envFile -> DotNetEnv.Env.Load(envFile)
+    | None -> DotNetEnv.Env.Load()
 
 let createEnv asm ns =
     let ty = ProvidedTypeDefinition(asm, ns, "Env", None)
@@ -30,6 +50,8 @@ let addEnvOrDefault asm ns (ty: ProvidedTypeDefinition) =
             ty)
     ty
 
-let create asm ns =
+let create asm ns baseDir =
+    searchAndLoadEnvFile(baseDir)
+    
     createEnv asm ns
     |> addEnvOrDefault asm ns
