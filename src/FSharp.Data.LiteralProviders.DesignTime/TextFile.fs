@@ -1,4 +1,4 @@
-﻿module internal FSharp.Data.LiteralProviders.TextFileProvider
+module internal FSharp.Data.LiteralProviders.DesignTime.TextFileProvider
 
 open System.IO
 open System.Reflection

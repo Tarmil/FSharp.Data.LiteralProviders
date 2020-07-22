@@ -1,4 +1,4 @@
-﻿module internal FSharp.Data.LiteralProviders.BuildDateProvider
+module internal FSharp.Data.LiteralProviders.DesignTime.BuildDateProvider
 
 open System
 open ProviderImplementation.ProvidedTypes

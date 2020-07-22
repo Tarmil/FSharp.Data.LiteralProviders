@@ -1,24 +1,19 @@
-frameworks net45, netstandard2.0
-storage none
-source https://api.nuget.org/v3/index.json
+storage: packages
+source https://nuget.org/api/v2
+
+frameworks: net46, netstandard2.0
 
 nuget DotNetEnv
 nuget FSharp.Core >= 4.5.0 lowest_matching: true
+nuget NETStandard.Library.NETFramework
+github fsprojects/FSharp.TypeProviders.SDK src/ProvidedTypes.fsi
+github fsprojects/FSharp.TypeProviders.SDK src/ProvidedTypes.fs
 
-group tests
-  frameworks netcoreapp3.0, net461, net472, net45
-  storage none
-  source https://api.nuget.org/v3/index.json
+group Test
+  source https://nuget.org/api/v2
+  frameworks: net461, netcoreapp3.1
 
-  nuget Microsoft.NET.Test.Sdk 15.9.0
-  nuget nunit 3.11.0
-  nuget NUnit3TestAdapter 3.12.0
-
-group tpsdk
-  frameworks netstandard2.0, net45
-  storage packages
-  source https://api.nuget.org/v3/index.json
-
-  github fsprojects/FSharp.TypeProviders.SDK src/ProvidedTypes.fsi
-  github fsprojects/FSharp.TypeProviders.SDK src/ProvidedTypes.fs
-  nuget NETStandard.Library.NETFramework
+  nuget NUnit
+  nuget NUnit.Console
+  nuget NUnit3TestAdapter version_in_path: true
+  nuget FSharp.Core

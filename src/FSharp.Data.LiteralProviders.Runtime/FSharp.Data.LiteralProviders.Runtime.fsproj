@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <!-- See https://stackoverflow.com/questions/43921992/how-can-i-use-beforebuild-and-afterbuild-targets-with-visual-studio-2017 -->
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+  <Import Project="..\..\netfx.props" />
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFrameworks>netstandard2.0; net46</TargetFrameworks>
+    <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
+    <Description>F# Type providers generating literals from the compile-time environment</Description>
+    <Authors>Loic Denuziere</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/tarmil/FSharp.Data.LiteralProviders</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/tarmil/FSharp.LiteralProviders.git</RepositoryUrl>
+    <Tags>F#;FSharp;Environment;TypeProvider</Tags>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(APPVEYOR)' == 'true'">
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="FSharp.Data.LiteralProviders.Runtime.fs" />
+    <None Include="paket.references" />
+  </ItemGroup>
+  <Target Name="BeforeBuild">
+    <MSBuild Projects="..\FSharp.Data.LiteralProviders.DesignTime\FSharp.Data.LiteralProviders.DesignTime.fsproj" Targets="Restore" />
+    <MSBuild Projects="..\FSharp.Data.LiteralProviders.DesignTime\FSharp.Data.LiteralProviders.DesignTime.fsproj" Targets="Build" Properties="Configuration=$(Configuration);TargetFramework=netstandard2.0" />
+    <MSBuild Projects="..\FSharp.Data.LiteralProviders.DesignTime\FSharp.Data.LiteralProviders.DesignTime.fsproj" Targets="Build" Properties="Configuration=$(Configuration);TargetFramework=net46" />
+  </Target>
+  <Target Name="AfterBuild">
+    <CreateItem Include="..\FSharp.Data.LiteralProviders.DesignTime\bin\$(Configuration)\net46\*.dll;..\FSharp.Data.LiteralProviders.DesignTime\bin\$(Configuration)\net46\*.pdb">
+      <Output TaskParameter="Include" ItemName="DesignTimeBinaries2" />
+    </CreateItem>
+    <Copy SourceFiles="@(DesignTimeBinaries2)" DestinationFolder="$(OutputPath)/../typeproviders/fsharp41/net46" />
+    <CreateItem Include="..\FSharp.Data.LiteralProviders.DesignTime\bin\$(Configuration)\netstandard2.0\*.dll;..\FSharp.Data.LiteralProviders.DesignTime\bin\$(Configuration)\netstandard2.0\*.pdb">
+      <Output TaskParameter="Include" ItemName="DesignTimeBinaries3" />
+    </CreateItem>
+    <Copy SourceFiles="@(DesignTimeBinaries3)" DestinationFolder="$(OutputPath)/../typeproviders/fsharp41/netstandard2.0" />
+  </Target>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
+    <PackageReference Include="Nerdbank.GitVersioning">
+      <Version>2.3.183</Version>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
+</Project>
