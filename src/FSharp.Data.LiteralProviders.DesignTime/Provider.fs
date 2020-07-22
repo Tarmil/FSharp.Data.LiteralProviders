@@ -1,4 +1,4 @@
-﻿namespace FSharp.Data.LiteralProviders
+module FSharp.Data.LiteralProviders.DesignTime.Implementation
 
 open System.Reflection
 open FSharp.Core.CompilerServices
@@ -6,7 +6,7 @@ open ProviderImplementation.ProvidedTypes
 
 [<TypeProvider>]
 type Provider(config) as this =
-    inherit TypeProviderForNamespaces(config)
+    inherit TypeProviderForNamespaces(config, assemblyReplacementMap=[("FSharp.Data.LiteralProviders.DesignTime", "FSharp.Data.LiteralProviders.Runtime")], addDefaultProbingLocation=true)
 
     let ns = "FSharp.Data.LiteralProviders"
     let asm = Assembly.GetExecutingAssembly()

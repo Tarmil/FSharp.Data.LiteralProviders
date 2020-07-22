@@ -1,4 +1,4 @@
-﻿module internal FSharp.Data.LiteralProviders.EnvProvider
+module internal FSharp.Data.LiteralProviders.DesignTime.EnvProvider
 
 open System
 open System.Collections
