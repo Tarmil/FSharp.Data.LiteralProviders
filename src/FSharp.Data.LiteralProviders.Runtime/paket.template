@@ -1,11 +1,11 @@
 type project
 id FSharp.Data.LiteralProviders
 files
-    bin/Release/net46/FSharp.Data.LiteralProviders.Runtime.* ==> lib/net46
+    bin/Release/net472/FSharp.Data.LiteralProviders.Runtime.* ==> lib/net472
     bin/Release/netstandard2.0/FSharp.Data.LiteralProviders.Runtime.* ==> lib/netstandard2.0
     # bin/Release/typeproviders/fsharp41/netstandard2.0/*.dll ==> typeproviders/fsharp41/netstandard2.0
-    # bin/Release/typeproviders/fsharp41/net46/*.dll ==> typeproviders/fsharp41/net45
+    # bin/Release/typeproviders/fsharp41/net472/*.dll ==> typeproviders/fsharp41/net45
     bin/Release/typeproviders/fsharp41/netstandard2.0/FSharp.Data.LiteralProviders.DesignTime.dll ==> typeproviders/fsharp41/netstandard2.0
-    bin/Release/typeproviders/fsharp41/netstandard2.0/DotNetEnv.dll ==> typeproviders/fsharp41/netstandard2.0
-    bin/Release/typeproviders/fsharp41/net46/FSharp.Data.LiteralProviders.DesignTime.dll ==> typeproviders/fsharp41/net46
-    bin/Release/typeproviders/fsharp41/net46/DotNetEnv.dll ==> typeproviders/fsharp41/net46
+    bin/Release/typeproviders/fsharp41/netstandard2.0/DotEnvFile.dll ==> typeproviders/fsharp41/netstandard2.0
+    bin/Release/typeproviders/fsharp41/net472/FSharp.Data.LiteralProviders.DesignTime.dll ==> typeproviders/fsharp41/net472
+    bin/Release/typeproviders/fsharp41/net472/DotEnvFile.dll ==> typeproviders/fsharp41/net472

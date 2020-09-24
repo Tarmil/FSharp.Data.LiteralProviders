@@ -5,7 +5,7 @@
   <Import Project="..\..\netfx.props" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>netstandard2.0; net46</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0; net472</TargetFrameworks>
     <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
     <Description>F# Type providers generating literals from the compile-time environment</Description>
     <Authors>Loic Denuziere</Authors>
@@ -28,20 +28,20 @@
   <Target Name="BeforeBuild">
     <MSBuild Projects="..\FSharp.Data.LiteralProviders.DesignTime\FSharp.Data.LiteralProviders.DesignTime.fsproj" Targets="Restore" />
     <MSBuild Projects="..\FSharp.Data.LiteralProviders.DesignTime\FSharp.Data.LiteralProviders.DesignTime.fsproj" Targets="Build" Properties="Configuration=$(Configuration);TargetFramework=netstandard2.0" />
-    <MSBuild Projects="..\FSharp.Data.LiteralProviders.DesignTime\FSharp.Data.LiteralProviders.DesignTime.fsproj" Targets="Build" Properties="Configuration=$(Configuration);TargetFramework=net46" />
+    <MSBuild Projects="..\FSharp.Data.LiteralProviders.DesignTime\FSharp.Data.LiteralProviders.DesignTime.fsproj" Targets="Build" Properties="Configuration=$(Configuration);TargetFramework=net472" />
   </Target>
   <Target Name="AfterBuild">
-    <CreateItem Include="..\FSharp.Data.LiteralProviders.DesignTime\bin\$(Configuration)\net46\*.dll;..\FSharp.Data.LiteralProviders.DesignTime\bin\$(Configuration)\net46\*.pdb">
+    <CreateItem Include="..\FSharp.Data.LiteralProviders.DesignTime\bin\$(Configuration)\net472\*.dll;..\FSharp.Data.LiteralProviders.DesignTime\bin\$(Configuration)\net472\*.pdb">
       <Output TaskParameter="Include" ItemName="DesignTimeBinaries2" />
     </CreateItem>
-    <Copy SourceFiles="@(DesignTimeBinaries2)" DestinationFolder="$(OutputPath)/../typeproviders/fsharp41/net46" />
+    <Copy SourceFiles="@(DesignTimeBinaries2)" DestinationFolder="$(OutputPath)/../typeproviders/fsharp41/net472" />
     <CreateItem Include="..\FSharp.Data.LiteralProviders.DesignTime\bin\$(Configuration)\netstandard2.0\*.dll;..\FSharp.Data.LiteralProviders.DesignTime\bin\$(Configuration)\netstandard2.0\*.pdb">
       <Output TaskParameter="Include" ItemName="DesignTimeBinaries3" />
     </CreateItem>
     <Copy SourceFiles="@(DesignTimeBinaries3)" DestinationFolder="$(OutputPath)/../typeproviders/fsharp41/netstandard2.0" />
   </Target>
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
     <PackageReference Include="Nerdbank.GitVersioning">
       <Version>2.3.183</Version>
       <PrivateAssets>all</PrivateAssets>
