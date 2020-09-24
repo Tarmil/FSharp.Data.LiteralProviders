@@ -50,12 +50,17 @@ let createEnv asm ns (variables: IDictionary<string, string>) =
         thisTy |> ty.AddMember
     ty
 
-let addEnvOrDefault asm ns (variables: IDictionary<string, string>) (ty: ProvidedTypeDefinition) =
+let addEnvOrDefault asm ns (envVars: IDictionary<string, string>) (fileVars: IDictionary<string, string>) (ty: ProvidedTypeDefinition) =
     ty.DefineStaticParameters(
-        [ProvidedStaticParameter("Name", typeof<string>); ProvidedStaticParameter("DefaultValue", typeof<string>, "")],
+        [
+            ProvidedStaticParameter("Name", typeof<string>)
+            ProvidedStaticParameter("DefaultValue", typeof<string>, "")
+            ProvidedStaticParameter("LoadEnvFile", typeof<bool>, true)
+        ],
         fun tyName args ->
             let ty = ProvidedTypeDefinition(asm, ns, tyName, None)
             let name = args.[0] :?> string
+            let variables = if args.[2] :?> bool then mergeDicts [envVars; fileVars] else envVars
             let isSet, envValue = variables.TryGetValue(name)
             let value = if isSet then envValue else args.[1] :?> string
             ProvidedField.Literal("Name", typeof<string>, name) |> ty.AddMember
@@ -65,6 +70,7 @@ let addEnvOrDefault asm ns (variables: IDictionary<string, string>) (ty: Provide
     ty
 
 let create asm ns baseDir =
-    let vars = mergeDicts [loadEnvVariables(); searchAndLoadEnvFile baseDir]
-    createEnv asm ns vars
-    |> addEnvOrDefault asm ns vars
+    let envVars = loadEnvVariables()
+    let fileVars = searchAndLoadEnvFile baseDir
+    createEnv asm ns (mergeDicts [envVars; fileVars])
+    |> addEnvOrDefault asm ns envVars fileVars
