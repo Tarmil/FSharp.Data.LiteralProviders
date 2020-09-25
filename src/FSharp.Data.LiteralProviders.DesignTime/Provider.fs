@@ -12,7 +12,7 @@ type Provider(config) as this =
     let asm = Assembly.GetExecutingAssembly()
 
     let createTypes() =
-        [ EnvProvider.create asm ns
+        [ EnvProvider.create asm ns config.ResolutionFolder
           TextFileProvider.create asm ns config.ResolutionFolder
           BuildDateProvider.create asm ns ]
 
