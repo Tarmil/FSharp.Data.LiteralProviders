@@ -1,6 +1,6 @@
 # FSharp.Data.LiteralProviders
 
-[![Build status](https://ci.appveyor.com/api/projects/status/hteaej04prcnaes7/branch/master?svg=true)](https://ci.appveyor.com/project/Tarmil/fsharp-data-literalproviders/branch/master)
+[![Build](https://github.com/Tarmil/FSharp.Data.LiteralProviders/workflows/Build/badge.svg?branch=master)](https://github.com/Tarmil/FSharp.Data.LiteralProviders/actions?query=workflow%3ABuild+branch%3Amaster)
 [![Nuget](https://img.shields.io/nuget/v/FSharp.Data.LiteralProviders?logo=nuget)](https://nuget.org/packages/FSharp.Data.LiteralProviders)
 
 This is a collection of type providers that provide literals: compile-time constants that can be used in regular code, but also as parameters to other type providers or .NET attributes.
