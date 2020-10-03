@@ -42,6 +42,7 @@ jobs:
             dotnet paket pack $PWD/bin/nuget --version $FULLVERSION
             "RELEASE_TAG=v$FULLVERSION" | out-file $env:GITHUB_ENV utf8 -append
             "RELEASE_TITLE=Version $BASEVERSION" | out-file $env:GITHUB_ENV utf8 -append
+            get-content $env:GITHUB_ENV
 
       - name: Upload nupkg
         uses: actions/upload-artifact@v1
