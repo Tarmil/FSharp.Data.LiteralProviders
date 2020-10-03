@@ -37,9 +37,11 @@ jobs:
 
       - name: Pack
         run: |
-            dotnet paket pack $PWD/bin/nuget --version $(dotnet nbgv get-version -v SemVer2)
-            echo "::set-env name=RELEASE_TAG::v$(dotnet nbgv get-version -v SemVer2)"
-            echo "::set-env name=RELEASE_TITLE::Version $(dotnet nbgv get-version -v MajorMinorVersion)"
+            $FULLVERSION = dotnet nbgv get-version -v SemVer2
+            $BASEVERSION = dotnet nbgv get-version -v MajorMinorVersion
+            dotnet paket pack $PWD/bin/nuget --version $FULLVERSION
+            "RELEASE_TAG=v$FULLVERSION" | out-file $env:GITHUB_ENV utf8 -append
+            "RELEASE_TITLE=Version $BASEVERSION" | out-file $env:GITHUB_ENV utf8 -append
 
       - name: Upload nupkg
         uses: actions/upload-artifact@v1
