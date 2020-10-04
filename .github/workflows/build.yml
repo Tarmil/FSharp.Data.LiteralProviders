@@ -67,17 +67,18 @@ jobs:
           echo "TAG_VERSION=$(dotnet nbgv get-version -v MajorMinorVersion)" >> $GITHUB_ENV
 
       - name: Create major-minor tag
-        uses: ./.github/actions/github-tagger
+        uses: Tarmil/github-tagger@master
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           tag: v${{ env.TAG_VERSION }}
-          move-existing: true
+          if-exists: replace
 
       - name: Create full tag
-        uses: ./.github/actions/github-tagger
+        uses: Tarmil/github-tagger@master
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           tag: v${{ env.FULL_VERSION }}
+          if-exists: fail
 
       - name: Create draft release
         uses: Roang-zero1/github-create-release-action@master
