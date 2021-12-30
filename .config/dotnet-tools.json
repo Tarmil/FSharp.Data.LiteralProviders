@@ -3,13 +3,13 @@
   "isRoot": true,
   "tools": {
     "paket": {
-      "version": "5.227.0",
+      "version": "6.2.1",
       "commands": [
         "paket"
       ]
     },
     "nbgv": {
-      "version": "3.0.26",
+      "version": "3.4.244",
       "commands": [
         "nbgv"
       ]

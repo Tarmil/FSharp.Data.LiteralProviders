@@ -9,7 +9,7 @@ open ProviderImplementation.ProvidedTypes
 let DefaultEnvFileName = ".env"
 let LevelsToSearchForEnvFile = 3
 
-let searchAndLoadEnvFile (baseDir) =
+let searchAndLoadEnvFile baseDir =
     let envFile =
         seq {
             let mutable currentDirectory = DirectoryInfo(baseDir)
@@ -31,7 +31,7 @@ let loadEnvVariables () =
         let entry = entry :?> DictionaryEntry
         let name = entry.Key :?> string
         let value = entry.Value :?> string
-        yield name, value
+        name, value
     ]
 
 let mergeDicts (dicts: seq<IDictionary<_, _>>) =
