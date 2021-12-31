@@ -1,5 +1,15 @@
 type project
 id FSharp.Data.LiteralProviders
+licenseExpression MIT
+licenseUrl https://licenses.nuget.org/MIT
+authors Loïc Denuzière
+copyright Copyright 2020-2021 Loïc Denuzière
+description
+    F# Type providers generating literals from the compile-time environment
+projectUrl https://github.com/tarmil/FSharp.Data.LiteralProviders
+repositoryUrl https://github.com/tarmil/FSharp.Data.LiteralProviders
+repositoryType git
+tags F#;FSharp;Environment;TypeProvider
 files
     bin/Release/net472/FSharp.Data.LiteralProviders.Runtime.* ==> lib/net472
     bin/Release/netstandard2.0/FSharp.Data.LiteralProviders.Runtime.* ==> lib/netstandard2.0
