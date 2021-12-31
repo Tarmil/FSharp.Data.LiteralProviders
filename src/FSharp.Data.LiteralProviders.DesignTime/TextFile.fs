@@ -1,40 +1,68 @@
 module internal FSharp.Data.LiteralProviders.DesignTime.TextFileProvider
 
+open System
 open System.IO
 open System.Reflection
 open System.Text
 open ProviderImplementation.ProvidedTypes
 
-let private encodings : (string * Encoding) list =
-    [ "UTF-8", UTF8Encoding(false, true)
-      "UTF-16-le", UnicodeEncoding(false, false, true)
-      "UTF-16-be", UnicodeEncoding(true, false, true)
-      "UTF-32-le", UTF32Encoding(false, false, true)
-      "UTF-32-be", UTF32Encoding(true, false, true) ]
+let private allEncodings : (string * Encoding) list =
+    [ "UTF-8", UTF8Encoding(true, true)
+      "UTF-16-le", UnicodeEncoding(false, true, true)
+      "UTF-16-be", UnicodeEncoding(true, true, true)
+      "UTF-32-le", UTF32Encoding(false, true, true)
+      "UTF-32-be", UTF32Encoding(true, true, true) ]
+    
+type private EncodingsResult = Result<(string * Encoding) list, string>
 
-let private addFileMembers (ty: ProvidedTypeDefinition) (path: string) (name: string) =
-    ty.AddMembersDelayed(fun () ->
-        let byteContent = File.ReadAllBytes path
-        let textContent =
-            encodings
-            |> List.tryPick (fun (name, e) ->
-                try (name, e.GetString(byteContent)) |> Some
-                with _ -> None)
-        [ ProvidedField.Literal("Path", typeof<string>, path)
-          ProvidedField.Literal("Name", typeof<string>, name)
-          match textContent with
-          | Some (encoding, textContent) ->
-              ProvidedField.Literal("Encoding", typeof<string>, encoding)
-              ProvidedField.Literal("Text", typeof<string>, textContent)
-          | None ->
-              ProvidedProperty("Not a text file", typeof<string>, (fun _ -> <@@ "" @@>), isStatic = true)
-        ] : list<MemberInfo>)
+let private getEncodings (name: string) : EncodingsResult =
+    if String.IsNullOrEmpty name then
+        Ok allEncodings
+    else
+        match allEncodings |> List.tryFind (fun (n, _) -> n = name) with
+        | Some e -> Ok [e]
+        | None -> Error ("Unknown encoding: " + name)
+
+let private stripBom (encoding: Encoding) (bytes: byte[]) =
+    let bom = encoding.GetPreamble()
+    if bytes.Length >= bom.Length && (bytes, bom) ||> Seq.forall2 (=) then
+        true, bytes[bom.Length..]
+    else
+        false, bytes
+        
+let private errorMember error =
+    ProvidedProperty("Not a text file", typeof<string>, (fun _ -> <@@ "" @@>), isStatic = true)
+
+let private addFileMembers (ty: ProvidedTypeDefinition) (path: string) (name: string) (encodings: EncodingsResult) =
+    ty.AddMembersDelayed<MemberInfo>(fun () ->
+        match encodings with
+        | Ok encodings ->
+            let byteContent = File.ReadAllBytes path
+            let textContent =
+                encodings
+                |> List.tryPick (fun (name, e) ->
+                    try
+                        let hasBom, byteContent = stripBom e byteContent
+                        (name, hasBom, e.GetString(byteContent)) |> Some
+                    with _ -> None)
+            [ ProvidedField.Literal("Path", typeof<string>, path)
+              ProvidedField.Literal("Name", typeof<string>, name)
+              match textContent with
+              | Some (encoding, hasBom, textContent) ->
+                  ProvidedField.Literal("Encoding", typeof<string>, encoding)
+                  ProvidedField.Literal("Text", typeof<string>, textContent)
+                  ProvidedField.Literal("HasBom", typeof<bool>, hasBom)
+              | None ->
+                  errorMember "Not a text file"
+            ]
+        | Error error ->
+            [ errorMember error ])
 
 let createFile asm ns baseDir =
     let createForFile (path: string) : ProvidedTypeDefinition =
         let name = Path.GetFileName path
         let ty = ProvidedTypeDefinition(name, None)
-        addFileMembers ty path name
+        addFileMembers ty path name (Ok allEncodings)
         ty
 
     let rec createForDir (path: string) (isRoot: bool) : ProvidedTypeDefinition =
@@ -51,20 +79,23 @@ let createFile asm ns baseDir =
 
 let addFileOrDefault asm ns baseDir (ty: ProvidedTypeDefinition) =
     ty.DefineStaticParameters(
-        [ProvidedStaticParameter("Path", typeof<string>); ProvidedStaticParameter("DefaultValue", typeof<string>, "")],
+        [ ProvidedStaticParameter("Path", typeof<string>)
+          ProvidedStaticParameter("DefaultValue", typeof<string>, "")
+          ProvidedStaticParameter("Encoding", typeof<string>, "") ],
         fun tyName args ->
             let ty = ProvidedTypeDefinition(asm, ns, tyName, None)
-            let path = Path.Combine(baseDir, args.[0] :?> string)
+            let path = Path.Combine(baseDir, args[0] :?> string)
             let name = Path.GetFileName path
             let exists = File.Exists(path)
             ProvidedField.Literal("Exists", typeof<bool>, exists) |> ty.AddMember
             if exists then
-                addFileMembers ty path name
+                let encodings = getEncodings (args[2] :?> string)
+                addFileMembers ty path name encodings
             else
                 ty.AddMembers(
                     [ ProvidedField.Literal("Path", typeof<string>, path)
                       ProvidedField.Literal("Name", typeof<string>, name)
-                      ProvidedField.Literal("Text", typeof<string>, args.[1]) ])
+                      ProvidedField.Literal("Text", typeof<string>, args[1]) ])
             ty)
     ty
 

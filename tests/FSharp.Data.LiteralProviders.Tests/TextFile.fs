@@ -61,3 +61,13 @@ let ``Non-existent with default doesn't exist`` () =
 [<Test>]
 let ``Non-existent with default is default value`` () =
     Assert.AreEqual("default contents", ``Non-existent with default``.Text)
+
+type WithBom = TextFile<"subdir/textFileWithBom.txt", Encoding = "UTF-16-le">
+type WithoutBom = TextFile<"subdir/textFileWithoutBom.txt", Encoding = "UTF-16-le">
+
+[<Test>]
+let ``Regression #12 - Strip BOM`` () =
+    Assert.IsTrue(WithBom.HasBom)
+    Assert.AreEqual("Test content", WithBom.Text)
+    Assert.IsFalse(WithoutBom.HasBom)
+    Assert.AreEqual("Test content", WithoutBom.Text)
