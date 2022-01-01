@@ -83,20 +83,23 @@ let addFileOrDefault asm ns baseDir (ty: ProvidedTypeDefinition) =
           ProvidedStaticParameter("DefaultValue", typeof<string>, "")
           ProvidedStaticParameter("Encoding", typeof<string>, "") ],
         fun tyName args ->
-            let ty = ProvidedTypeDefinition(asm, ns, tyName, None)
-            let path = Path.Combine(baseDir, args[0] :?> string)
-            let name = Path.GetFileName path
-            let exists = File.Exists(path)
-            ProvidedField.Literal("Exists", typeof<bool>, exists) |> ty.AddMember
-            if exists then
-                let encodings = getEncodings (args[2] :?> string)
-                addFileMembers ty path name encodings
-            else
-                ty.AddMembers(
-                    [ ProvidedField.Literal("Path", typeof<string>, path)
-                      ProvidedField.Literal("Name", typeof<string>, name)
-                      ProvidedField.Literal("Text", typeof<string>, args[1]) ])
-            ty)
+            match args with
+            | [| :? string as path; :? string as defaultValue; :? string as encoding |] ->
+                let ty = ProvidedTypeDefinition(asm, ns, tyName, None)
+                let path = Path.Combine(baseDir, path)
+                let name = Path.GetFileName path
+                let exists = File.Exists(path)
+                ProvidedField.Literal("Exists", typeof<bool>, exists) |> ty.AddMember
+                if exists then
+                    let encodings = getEncodings encoding
+                    addFileMembers ty path name encodings
+                else
+                    ty.AddMembers(
+                        [ ProvidedField.Literal("Path", typeof<string>, path)
+                          ProvidedField.Literal("Name", typeof<string>, name)
+                          ProvidedField.Literal("Text", typeof<string>, defaultValue) ])
+                ty
+            | _ -> failwithf "Invalid args: %A" args)
     ty
 
 let create asm ns baseDir =

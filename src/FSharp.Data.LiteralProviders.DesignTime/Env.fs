@@ -58,15 +58,17 @@ let addEnvOrDefault asm ns (envVars: IDictionary<string, string>) (fileVars: IDi
             ProvidedStaticParameter("LoadEnvFile", typeof<bool>, true)
         ],
         fun tyName args ->
-            let ty = ProvidedTypeDefinition(asm, ns, tyName, None)
-            let name = args.[0] :?> string
-            let variables = if args.[2] :?> bool then mergeDicts [envVars; fileVars] else envVars
-            let isSet, envValue = variables.TryGetValue(name)
-            let value = if isSet then envValue else args.[1] :?> string
-            ProvidedField.Literal("Name", typeof<string>, name) |> ty.AddMember
-            ProvidedField.Literal("Value", typeof<string>, value) |> ty.AddMember
-            ProvidedField.Literal("IsSet", typeof<bool>, isSet) |> ty.AddMember
-            ty)
+            match args with
+            | [| :? string as name; :? string as defaultValue; :? bool as loadEnvFile |] ->
+                let ty = ProvidedTypeDefinition(asm, ns, tyName, None)
+                let variables = if loadEnvFile then mergeDicts [envVars; fileVars] else envVars
+                let isSet, envValue = variables.TryGetValue(name)
+                let value = if isSet then envValue else defaultValue
+                ProvidedField.Literal("Name", typeof<string>, name) |> ty.AddMember
+                ProvidedField.Literal("Value", typeof<string>, value) |> ty.AddMember
+                ProvidedField.Literal("IsSet", typeof<bool>, isSet) |> ty.AddMember
+                ty
+            | _ -> failwithf "Invalid args: %A" args)
     ty
 
 let create asm ns baseDir =
