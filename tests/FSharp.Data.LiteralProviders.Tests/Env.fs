@@ -58,3 +58,6 @@ let ``Garbage variable with default is not set`` () =
 [<Test>]
 let ``Garbage variable with default is default`` () =
     Assert.AreEqual("some default value", ``Garbage with default``.Value)
+
+// Uncomment below to test EnsureExists
+// type EnsureExists = Env<"doesntexist", EnsureExists = true>

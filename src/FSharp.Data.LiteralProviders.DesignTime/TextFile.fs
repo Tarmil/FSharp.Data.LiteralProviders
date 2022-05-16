@@ -81,10 +81,11 @@ let addFileOrDefault asm ns baseDir (ty: ProvidedTypeDefinition) =
     ty.DefineStaticParameters(
         [ ProvidedStaticParameter("Path", typeof<string>)
           ProvidedStaticParameter("DefaultValue", typeof<string>, "")
-          ProvidedStaticParameter("Encoding", typeof<string>, "") ],
+          ProvidedStaticParameter("Encoding", typeof<string>, "")
+          ProvidedStaticParameter("EnsureExists", typeof<bool>, false) ],
         fun tyName args ->
             match args with
-            | [| :? string as path; :? string as defaultValue; :? string as encoding |] ->
+            | [| :? string as path; :? string as defaultValue; :? string as encoding; :? bool as ensureExists |] ->
                 let ty = ProvidedTypeDefinition(asm, ns, tyName, None)
                 let path = Path.Combine(baseDir, path)
                 let name = Path.GetFileName path
@@ -93,6 +94,8 @@ let addFileOrDefault asm ns baseDir (ty: ProvidedTypeDefinition) =
                 if exists then
                     let encodings = getEncodings encoding
                     addFileMembers ty path name encodings
+                elif ensureExists then
+                    failwithf "File does not exist: %s" path
                 else
                     ty.AddMembers(
                         [ ProvidedField.Literal("Path", typeof<string>, path)

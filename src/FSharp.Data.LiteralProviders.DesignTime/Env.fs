@@ -56,18 +56,22 @@ let addEnvOrDefault asm ns (envVars: IDictionary<string, string>) (fileVars: IDi
             ProvidedStaticParameter("Name", typeof<string>)
             ProvidedStaticParameter("DefaultValue", typeof<string>, "")
             ProvidedStaticParameter("LoadEnvFile", typeof<bool>, true)
+            ProvidedStaticParameter("EnsureExists", typeof<bool>, false)
         ],
         fun tyName args ->
             match args with
-            | [| :? string as name; :? string as defaultValue; :? bool as loadEnvFile |] ->
+            | [| :? string as name; :? string as defaultValue; :? bool as loadEnvFile; :? bool as ensureExists |] ->
                 let ty = ProvidedTypeDefinition(asm, ns, tyName, None)
                 let variables = if loadEnvFile then mergeDicts [envVars; fileVars] else envVars
                 let isSet, envValue = variables.TryGetValue(name)
-                let value = if isSet then envValue else defaultValue
-                ProvidedField.Literal("Name", typeof<string>, name) |> ty.AddMember
-                ProvidedField.Literal("Value", typeof<string>, value) |> ty.AddMember
-                ProvidedField.Literal("IsSet", typeof<bool>, isSet) |> ty.AddMember
-                ty
+                if ensureExists && not isSet then
+                    failwithf "Environment variable does not exist: %s" name
+                else
+                    let value = if isSet then envValue else defaultValue
+                    ProvidedField.Literal("Name", typeof<string>, name) |> ty.AddMember
+                    ProvidedField.Literal("Value", typeof<string>, value) |> ty.AddMember
+                    ProvidedField.Literal("IsSet", typeof<bool>, isSet) |> ty.AddMember
+                    ty
             | _ -> failwithf "Invalid args: %A" args)
     ty
 

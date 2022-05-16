@@ -71,3 +71,6 @@ let ``Regression #12 - Strip BOM`` () =
     Assert.AreEqual("Test content", WithBom.Text)
     Assert.IsFalse(WithoutBom.HasBom)
     Assert.AreEqual("Test content", WithoutBom.Text)
+
+// Uncomment below to test EnsureExists
+// type EnsureExists = TextFile<"doesntexist.txt", EnsureExists = true>
