@@ -46,17 +46,30 @@ match vsVersion with
 | v -> printfn "This program was built with Visual Studio %s." v
 ```
 
-You can pass a second parameter that will be used as the default value instead of the empty string.
+Additional parameters can be passed:
 
-```fsharp
-open FSharp.Data.Sql
-open FSharp.Data.LiteralProviders
+* `DefaultValue : string` will be used as the value if the environment variable isn't set, instead of the empty string.
 
-let [<Literal>] connString =
-    Env<"CONNECTION_STRING", "Server=localhost;Integrated Security=true">.Value
+    ```fsharp
+    open FSharp.Data.Sql
+    open FSharp.Data.LiteralProviders
 
-type Sql = SqlProvider<Common.DatabaseProviderTypes.MSSQLSERVER, connString>
-```
+    let [<Literal>] connString =
+        Env<"CONNECTION_STRING", "Server=localhost;Integrated Security=true">.Value
+
+    type Sql = SqlProvider<Common.DatabaseProviderTypes.MSSQLSERVER, connString>
+    ```
+
+* `EnsureExists : bool` specifies the behavior when the environment variable isn't set.
+
+    If false (the default), then `Value` is an empty string (or `DefaultValue` if provided).
+
+    If true, then the type provider raises a compile-time error.
+
+    ```fsharp
+    /// Throws a compile-time error "Environment variable does not exist: CONNECTION_STRING".
+    let [<Literal>] connString = Env<"CONNECTION_STRING", EnsureExists = true>.Text
+    ```
 
 > Tip: to pass `Env` directly to another type provider without binding it as a `let [<Literal>]`, use the `const` operator:
 >
@@ -88,15 +101,42 @@ open FSharp.Data.LiteralProviders
 let [<Literal>] version = TextFile<"build/version.txt">.Text
 ```
 
-You can pass a second parameter that will be used as the default value instead of the empty string.
+Additional parameters can be passed:
 
-```fsharp
-open FSharp.Data.LiteralProviders
+* `DefaultValue : string` will be used as the value if the file doesn't exist, instead of the empty string.
 
-/// The compile-time contents of the file <projectFolder>/build/version.txt
-/// or "1.0" if this file doesn't exist.
-let [<Literal>] version = TextFile<"build/version.txt", "1.0">.Text
-```
+    ```fsharp
+    open FSharp.Data.LiteralProviders
+
+    /// The compile-time contents of the file <projectFolder>/build/version.txt
+    /// or "1.0" if this file doesn't exist.
+    let [<Literal>] version = TextFile<"build/version.txt", DefaultValue = "1.0">.Text
+    ```
+
+* `Encoding : string` specifies the text encoding.
+
+    The possible values are `UTF-8`, `UTF-16-le`, `UTF-16-be`, `UTF-32-le` and `UTF-32-be`.
+
+    When not specified, `TextFile` tries to guess the encoding.
+
+    ```fsharp
+    open FSharp.Data.LiteralProviders
+
+    let [<Literal>] script = TextFile<"LoadData.sql", Encoding = "UTF-16-le">.Text
+    ```
+
+    Note: regardless of the encoding, if the file starts with a byte order mark, then the BOM is stripped from the string.
+
+* `EnsureExists : bool` specifies the behavior when the file doesn't exist.
+
+    If false (the default), then the `Text` value is an empty string (or `DefaultValue` if provided).
+
+    If true, then the type provider raises a compile-time error.
+
+    ```fsharp
+    /// Throws a compile-time error "File does not exist: fileThatDoesntExist.txt".
+    let [<Literal>] test = TextFile<"fileThatDoesntExist.txt", EnsureExists = true>.Text
+    ```
 
 ## BuildDate
 
