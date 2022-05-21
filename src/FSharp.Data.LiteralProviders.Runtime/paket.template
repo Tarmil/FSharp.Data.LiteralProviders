@@ -10,6 +10,7 @@ projectUrl https://github.com/tarmil/FSharp.Data.LiteralProviders
 repositoryUrl https://github.com/tarmil/FSharp.Data.LiteralProviders
 repositoryType git
 tags F#;FSharp;Environment;TypeProvider
+readme README.md
 files
     bin/Release/net472/FSharp.Data.LiteralProviders.Runtime.* ==> lib/net472
     bin/Release/netstandard2.0/FSharp.Data.LiteralProviders.Runtime.* ==> lib/netstandard2.0
@@ -19,3 +20,4 @@ files
     bin/Release/typeproviders/fsharp41/netstandard2.0/DotEnvFile.dll ==> typeproviders/fsharp41/netstandard2.0
     bin/Release/typeproviders/fsharp41/net472/FSharp.Data.LiteralProviders.DesignTime.dll ==> typeproviders/fsharp41/net472
     bin/Release/typeproviders/fsharp41/net472/DotEnvFile.dll ==> typeproviders/fsharp41/net472
+    ../../README.md ==> .
