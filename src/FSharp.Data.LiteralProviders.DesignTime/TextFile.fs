@@ -65,17 +65,19 @@ let createFile asm ns baseDir =
         addFileMembers ty path name (Ok allEncodings)
         ty
 
-    let rec createForDir (path: string) (isRoot: bool) : ProvidedTypeDefinition =
+    let rec createForDir (path: string) (name: string option) : ProvidedTypeDefinition =
         let ty =
-            if isRoot
-            then ProvidedTypeDefinition(asm, ns, "TextFile", None)
-            else ProvidedTypeDefinition(Path.GetFileName path, None)
+            match name with
+            | None -> ProvidedTypeDefinition(asm, ns, "TextFile", None)
+            | Some name -> ProvidedTypeDefinition(name, None)
         ty.AddMembersDelayed(fun () ->
             [ for f in Directory.GetFiles(path) do createForFile f
-              for d in Directory.GetDirectories(path) do createForDir d false ])
+              for d in Directory.GetDirectories(path) do createForDir d (Some (Path.GetFileName d))
+              let parent = Path.GetDirectoryName(path)
+              if parent <> path then createForDir parent (Some "..") ])
         ty
 
-    createForDir baseDir true
+    createForDir baseDir None
 
 let addFileOrDefault asm ns baseDir (ty: ProvidedTypeDefinition) =
     ty.DefineStaticParameters(

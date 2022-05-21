@@ -72,5 +72,17 @@ let ``Regression #12 - Strip BOM`` () =
     Assert.IsFalse(WithoutBom.HasBom)
     Assert.AreEqual("Test content", WithoutBom.Text)
 
+[<Test>]
+let ``Parent directory`` () =
+    Assert.AreEqual("This is some\ntext content.", TextFile.``..``.``parentTextFile.txt``.Text)
+
+[<Test>]
+let ``Parent of subdirectory`` () =
+    Assert.AreEqual("TextFile.fs", TextFile.subdir.``..``.``TextFile.fs``.Name)
+
+[<Test>]
+let ``Parent of parent directory`` () =
+    Assert.AreEqual("This is some\ntext content.", TextFile.subdir.``..``.``..``.``parentTextFile.txt``.Text)
+
 // Uncomment below to test EnsureExists
 // type EnsureExists = TextFile<"doesntexist.txt", EnsureExists = true>
