@@ -1,12 +1,7 @@
 module Tests.BuildDate
 
-open System.Text.RegularExpressions
 open NUnit.Framework
 open FSharp.Data.LiteralProviders
-
-module Assert =
-    let IsMatch(s: string, re: string) =
-        Regex.IsMatch(s, re) |> Assert.IsTrue
 
 [<Test>]
 let ``Utc build date is in UTC format`` () =
