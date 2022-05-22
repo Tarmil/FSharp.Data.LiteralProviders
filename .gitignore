@@ -6,3 +6,4 @@ packages/
 .vs/
 .ionide/
 *.user
+.idea/
