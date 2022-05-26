@@ -45,8 +45,9 @@ let createEnv asm ns (variables: IDictionary<string, string>) =
     let ty = ProvidedTypeDefinition(asm, ns, "Env", None)
     for KeyValue(name, value) in variables do
         let thisTy = ProvidedTypeDefinition(name, None)
-        ProvidedField.Literal("Name", typeof<string>, name) |> thisTy.AddMember
-        ProvidedField.Literal("Value", typeof<string>, value) |> thisTy.AddMember
+        thisTy.AddMembers(
+            [ yield! Value.String "Value" value
+              yield ProvidedField.Literal("Name", typeof<string>, name) ])
         thisTy |> ty.AddMember
     ty
 
@@ -68,9 +69,10 @@ let addEnvOrDefault asm ns (envVars: IDictionary<string, string>) (fileVars: IDi
                     failwithf "Environment variable does not exist: %s" name
                 else
                     let value = if isSet then envValue else defaultValue
-                    ProvidedField.Literal("Name", typeof<string>, name) |> ty.AddMember
-                    ProvidedField.Literal("Value", typeof<string>, value) |> ty.AddMember
-                    ProvidedField.Literal("IsSet", typeof<bool>, isSet) |> ty.AddMember
+                    ty.AddMembers(
+                        [ yield! Value.String "Value" value
+                          yield ProvidedField.Literal("Name", typeof<string>, name)
+                          yield ProvidedField.Literal("IsSet", typeof<bool>, isSet) ])
                     ty
             | _ -> failwithf "Invalid args: %A" args)
     ty

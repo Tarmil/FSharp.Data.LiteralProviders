@@ -86,3 +86,13 @@ let ``Parent of parent directory`` () =
 
 // Uncomment below to test EnsureExists
 // type EnsureExists = TextFile<"doesntexist.txt", EnsureExists = true>
+
+[<Test>]
+let ``Text as int`` () =
+    Assert.AreEqual(42, TextFile.subdir.``number.txt``.TextAsInt)
+    Assert.AreEqual(42, TextFile<"subdir/number.txt">.TextAsInt)
+
+[<Test>]
+let ``Text as bool`` () =
+    Assert.IsTrue(TextFile.subdir.``boolean.txt``.TextAsBool)
+    Assert.IsTrue(TextFile<"subdir/boolean.txt">.TextAsBool)

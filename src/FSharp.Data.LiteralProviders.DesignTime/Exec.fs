@@ -6,9 +6,6 @@ open System.IO
 open System.Text
 open ProviderImplementation.ProvidedTypes
 
-let createExec asm ns =
-    ProvidedTypeDefinition(asm, ns, "Exec", None)
-
 type ExecFailedException(exitCode: int, message: string) =
     inherit exn(message)
     member _.ExitCode = exitCode
@@ -72,7 +69,8 @@ let execute args =
           Error = error.ToString()
           ExitCode = proc.ExitCode }
 
-let addWithCommand asm ns baseDir (ty: ProvidedTypeDefinition) =
+let create asm ns baseDir =
+    let ty = ProvidedTypeDefinition(asm, ns, "Exec", None)
     ty.DefineStaticParameters(
         [ ProvidedStaticParameter("Command", typeof<string>)
           ProvidedStaticParameter("Arguments", typeof<string>, "")
@@ -87,9 +85,9 @@ let addWithCommand asm ns baseDir (ty: ProvidedTypeDefinition) =
                 ty.AddMembersDelayed(fun () ->
                     try
                         let res = execute args
-                        [ ProvidedField.Literal("Output", typeof<string>, res.Output)
-                          ProvidedField.Literal("Error", typeof<string>, res.Error)
-                          ProvidedField.Literal("ExitCode", typeof<int>, res.ExitCode) ]
+                        [ yield! Value.String "Output" res.Output
+                          yield! Value.String "Error" res.Error
+                          yield ProvidedField.Literal("ExitCode", typeof<int>, res.ExitCode) ]
                     with exn ->
                         let exitCode =
                             match exn with
@@ -101,7 +99,3 @@ let addWithCommand asm ns baseDir (ty: ProvidedTypeDefinition) =
                 ty
             | _ -> failwithf "Invalid args: %A" args)
     ty
-
-let create asm ns baseDir =
-    createExec asm ns
-    |> addWithCommand asm ns baseDir

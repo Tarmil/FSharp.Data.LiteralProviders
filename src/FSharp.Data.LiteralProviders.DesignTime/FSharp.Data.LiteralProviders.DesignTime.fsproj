@@ -21,6 +21,7 @@
       <Link>paket-files/ProvidedTypes.fs</Link>
     </Compile>
     <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="Value.fs" />
     <Compile Include="Env.fs" />
     <Compile Include="TextFile.fs" />
     <Compile Include="BuildDate.fs" />
