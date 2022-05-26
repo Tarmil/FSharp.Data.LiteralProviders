@@ -45,15 +45,15 @@ let private addFileMembers (ty: ProvidedTypeDefinition) (path: string) (name: st
                         let hasBom, byteContent = stripBom e byteContent
                         (name, hasBom, e.GetString(byteContent)) |> Some
                     with _ -> None)
-            [ ProvidedField.Literal("Path", typeof<string>, path)
-              ProvidedField.Literal("Name", typeof<string>, name)
+            [ yield ProvidedField.Literal("Path", typeof<string>, path)
+              yield ProvidedField.Literal("Name", typeof<string>, name)
               match textContent with
               | Some (encoding, hasBom, textContent) ->
-                  ProvidedField.Literal("Encoding", typeof<string>, encoding)
-                  ProvidedField.Literal("Text", typeof<string>, textContent)
-                  ProvidedField.Literal("HasBom", typeof<bool>, hasBom)
+                  yield ProvidedField.Literal("Encoding", typeof<string>, encoding)
+                  yield! Value.String "Text" textContent
+                  yield ProvidedField.Literal("HasBom", typeof<bool>, hasBom)
               | None ->
-                  errorMember "Not a text file"
+                  yield errorMember "Not a text file"
             ]
         | Error error ->
             [ errorMember error ])
@@ -100,9 +100,9 @@ let addFileOrDefault asm ns baseDir (ty: ProvidedTypeDefinition) =
                     failwithf "File does not exist: %s" path
                 else
                     ty.AddMembers(
-                        [ ProvidedField.Literal("Path", typeof<string>, path)
-                          ProvidedField.Literal("Name", typeof<string>, name)
-                          ProvidedField.Literal("Text", typeof<string>, defaultValue) ])
+                        [ yield! Value.String "Text" defaultValue
+                          yield ProvidedField.Literal("Path", typeof<string>, path)
+                          yield ProvidedField.Literal("Name", typeof<string>, name) ])
                 ty
             | _ -> failwithf "Invalid args: %A" args)
     ty

@@ -61,3 +61,15 @@ let ``Garbage variable with default is default`` () =
 
 // Uncomment below to test EnsureExists
 // type EnsureExists = Env<"doesntexist", EnsureExists = true>
+
+[<Test>]
+let ``Value as int`` () =
+    Assert.AreEqual(42, Env<"SomeGarbageVariableThatShouldntBeSet", "42">.ValueAsInt)
+    Assert.AreEqual(57, Env<"SOME_NUMBER">.ValueAsInt)
+    Assert.AreEqual(57, Env.SOME_NUMBER.ValueAsInt)
+
+[<Test>]
+let ``Value as bool`` () =
+    Assert.IsTrue(Env<"SomeGarbageVariableThatShouldntBeSet", "true">.ValueAsBool)
+    Assert.IsTrue(Env<"SOME_BOOLEAN">.ValueAsBool)
+    Assert.IsTrue(Env.SOME_BOOLEAN.ValueAsBool)
