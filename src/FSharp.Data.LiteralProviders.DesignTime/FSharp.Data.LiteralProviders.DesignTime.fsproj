@@ -24,6 +24,7 @@
     <Compile Include="Env.fs" />
     <Compile Include="TextFile.fs" />
     <Compile Include="BuildDate.fs" />
+    <Compile Include="Exec.fs" />
     <Compile Include="Provider.fs" />
     <None Include="paket.references" />
   </ItemGroup>

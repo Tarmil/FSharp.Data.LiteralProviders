@@ -8,16 +8,18 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Assert.fs" />
     <Compile Include="Env.fs" />
     <Compile Include="TextFile.fs" />
     <Compile Include="BuildDate.fs" />
+    <Compile Include="Exec.fs" />
     <Content Include=".env" />
     <Content Include="subdir\*.*" />
     <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.15.1"/>
+    <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
     <ProjectReference Include="..\..\src\FSharp.Data.LiteralProviders.Runtime\FSharp.Data.LiteralProviders.Runtime.fsproj">
       <Name>FSharp.Data.LiteralProviders.Runtime</Name>
       <Project>{7e90d6ce-a10b-4858-a5bc-41df7250cbca}</Project>
