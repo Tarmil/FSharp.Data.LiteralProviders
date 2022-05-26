@@ -11,13 +11,14 @@ type Provider(config) as this =
     let ns = "FSharp.Data.LiteralProviders"
     let asm = Assembly.GetExecutingAssembly()
 
-    let createTypes() =
-        [ EnvProvider.create asm ns config.ResolutionFolder
-          TextFileProvider.create asm ns config.ResolutionFolder
-          BuildDateProvider.create asm ns
-          ExecProvider.create asm ns config.ResolutionFolder ]
-
-    do this.AddNamespace(ns, createTypes())
+    do
+        [ yield EnvProvider.create asm ns config.ResolutionFolder
+          yield TextFileProvider.create asm ns config.ResolutionFolder
+          yield BuildDateProvider.create asm ns
+          yield ExecProvider.create asm ns config.ResolutionFolder
+          yield! ConditionalProvider.create asm ns ]
+        |> List.groupBy (fun t -> t.Namespace)
+        |> List.iter this.AddNamespace
 
 [<assembly:TypeProviderAssembly>]
 do ()
