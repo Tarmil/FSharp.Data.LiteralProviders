@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0
+
+* [#17](https://github.com/Tarmil/FSharp.Data.LiteralProviders/issues/17)  
+    Add `Exec` provider that executes an executable and provides its output.
+* [#18](https://github.com/Tarmil/FSharp.Data.LiteralProviders/issues/18)  
+    Add conditional providers under sub-namespaces `String`, `Int` and `Bool`:  
+    `IF`, `EQ`, `NE`, `GT`, `GE`, `LT`, `LE`, `AND`, `OR`, `XOR`, `NOT`.
+* [#19](https://github.com/Tarmil/FSharp.Data.LiteralProviders/issues/19)  
+    Try to parse string values as int or bool, and provide `*AsInt` / `*AsBool` values on success.
+
 ## 0.4
 
 * [#2](https://github.com/Tarmil/FSharp.Data.LiteralProviders/issues/2)  
