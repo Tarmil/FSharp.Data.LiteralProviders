@@ -5,6 +5,19 @@
 
 This is a collection of type providers that provide literals: compile-time constants that can be used in regular code, but also as parameters to other type providers or .NET attributes.
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [Env](#env)
+- [TextFile](#textfile)
+- [Exec](#exec)
+- [Conditionals](#conditionals)
+- [BuildDate](#builddate)
+- [Parsed value](#parsed-value)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Env
 
 `FSharp.Data.LiteralProviders.Env` contains literals for environment variables during compile time.
@@ -45,6 +58,8 @@ match vsVersion with
 | "" -> printfn "This program wasn't compiled with Visual Studio."
 | v -> printfn "This program was built with Visual Studio %s." v
 ```
+
+When used with a parameter, `Env` also provides a value `IsSet : bool`
 
 Additional parameters can be passed:
 
@@ -138,6 +153,88 @@ Additional parameters can be passed:
     let [<Literal>] test = TextFile<"fileThatDoesntExist.txt", EnsureExists = true>.Text
     ```
 
+## Exec
+
+`FSharp.Data.LiteralProviders.Exec` executes an external program during compilation and captures its output.
+
+```fsharp
+open FSharp.Data.LiteralProviders
+
+let [<Literal>] currentBranch = Exec<"git", "branch --show-current">.Output
+```
+
+Additional parameters can be passed:
+
+* `Input: string`: text that is passed to the program's standard output.
+
+* `Directory: string`: the working directory. The default is the project directory.
+
+* `EnsureSuccess: bool`: if true, the provider ensures that the program exits successfully, and fails otherwise.  
+    If false, no error is raised.  
+    The default is true.
+
+* `Timeout: int`: timeout in milliseconds. Raise an error if the program takes longer to finish.  
+    The default is 10_000 (10 seconds).
+
+The following values are provided:
+
+* `Output: string`: the program's standard output.
+
+* `Error: string`: the program's standard error.
+
+* `ExitCode: int`: the program's exit code. Only useful with `EnsureSuccess = false`, otherwise always 0.
+
+## Conditionals
+
+`FSharp.Data.LiteralProviders` contains sub-namespaces `String`, `Int` and `Bool` for conditional operations on these types.
+
+### Equality
+
+The providers `EQ` and `NE` contain `Value: bool` that checks whether the two parameters are equal / not equal, respectively.
+
+```fsharp
+open FSharp.Data.LiteralProviders
+
+let [<Literal>] branch = Exec<"git", "branch --show-current">.Output
+
+let [<Literal>] isMaster = String.EQ<branch, "master">.Value
+```
+
+### Comparison
+
+In sub-namespace `Int`, the providers `LT`, `LE`, `GT` and `GE` contain `Value: bool` that checks whether the first parameter is less than / less than or equal / greater than / greater than or equal to the second parameter, respectively.
+
+```fsharp
+open FSharp.Data.LiteralProviders
+
+let [<Literal>] gitStatusCode = Exec<"git", "status", EnsureSuccess = false>.StatusCode
+
+let [<Literal>] notInGitRepo = Int.GT<gitStatusCode, 0>.Value
+```
+
+### Boolean operations
+
+In sub-namespace `Bool`, the providers `AND`, `OR`, `XOR` and `NOT` contain `Value: bool` that performs the corresponding boolean operation on its parameter(s).
+
+```fsharp
+open FSharp.Data.LiteralProviders
+
+type GithubAction = Env<"GITHUB_ACTION">
+
+let [<Literal>] isLocalBuild = Bool.NOT<GithubAction.IsSet>.Value
+```
+
+### If
+
+The provider `IF` takes a condition and two values as parameters.
+It returns the first value if the condition is true, and the second value if the condition is false.
+
+```fsharp
+open FSharp.Data.LiteralProviders
+
+let [<Literal>] versionSuffix = String.IF<isMaster, "", "-pre">.Value
+```
+
 ## BuildDate
 
 `FSharp.Data.LiteralProviders.BuildDate` contains the build time as a literal string in ISO-8601 format (["o" format](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings#Roundtrip)).
@@ -156,3 +253,22 @@ open FSharp.Data.LiteralProviders
 
 let buildTime = BuildDate<"hh:mm:ss">.Utc  // "21:45:03"
 ```
+
+## Parsed value
+
+The providers try to parse string values as integer and as boolean. If any of these succeed, a value suffixed with `AsInt` or `AsBool` is provided.
+
+```fsharp
+open FSharp.Data.LiteralProviders
+
+let runNumber = Env<"GITHUB_RUN_NUMBER">.Value // eg. "42"
+
+let runNumber = Env<"GITHUB_RUN_NUMBER">.ValueAsInt // eg. 42
+```
+
+The following values are parsed this way:
+
+* `Env.Value`
+* `TextFile.Text`
+* `Exec.Output`
+* `Exec.Error`
