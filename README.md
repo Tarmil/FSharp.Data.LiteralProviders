@@ -207,7 +207,7 @@ In sub-namespace `Int`, the providers `LT`, `LE`, `GT` and `GE` contain `Value: 
 ```fsharp
 open FSharp.Data.LiteralProviders
 
-let [<Literal>] gitStatusCode = Exec<"git", "status", EnsureSuccess = false>.StatusCode
+let [<Literal>] gitStatusCode = Exec<"git", "status", EnsureSuccess = false>.ExitCode
 
 let [<Literal>] notInGitRepo = Int.GT<gitStatusCode, 0>.Value
 ```
