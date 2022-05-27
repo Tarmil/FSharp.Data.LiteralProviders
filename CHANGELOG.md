@@ -2,24 +2,24 @@
 
 ## 1.0
 
-* [#17](https://github.com/Tarmil/FSharp.Data.LiteralProviders/issues/17)  
+* [#17](https://github.com/Tarmil/FSharp.Data.LiteralProviders/issues/17)
     Add `Exec` provider that executes an executable and provides its output.
-* [#18](https://github.com/Tarmil/FSharp.Data.LiteralProviders/issues/18)  
+* [#18](https://github.com/Tarmil/FSharp.Data.LiteralProviders/issues/18)
     Add conditional providers under sub-namespaces `String`, `Int` and `Bool`:  
     `IF`, `EQ`, `NE`, `GT`, `GE`, `LT`, `LE`, `AND`, `OR`, `XOR`, `NOT`.
-* [#19](https://github.com/Tarmil/FSharp.Data.LiteralProviders/issues/19)  
+* [#19](https://github.com/Tarmil/FSharp.Data.LiteralProviders/issues/19)
     Try to parse string values as int or bool, and provide `*AsInt` / `*AsBool` values on success.
 
 ## 0.4
 
-* [#2](https://github.com/Tarmil/FSharp.Data.LiteralProviders/issues/2)  
+* [#2](https://github.com/Tarmil/FSharp.Data.LiteralProviders/issues/2)
     `TextFile`: Add ``` ``..`` ``` to access the parent directory.
 * `TextFile`: Add optional parameter `Encoding`.  
     The possible values are `UTF-8`, `UTF-16-le`, `UTF-16-be`, `UTF-32-le` and `UTF-32-be`.  
     When not provided, the encoding is guessed automatically, as before.
-* [#12](https://github.com/Tarmil/FSharp.Data.LiteralProviders/issues/12)  
+* [#12](https://github.com/Tarmil/FSharp.Data.LiteralProviders/issues/12)
     `TextFile`: Strip the byte order mark from text content.
-* [#14](https://github.com/Tarmil/FSharp.Data.LiteralProviders/issues/14)  
+* [#14](https://github.com/Tarmil/FSharp.Data.LiteralProviders/issues/14)
     `Env` and `TextFile`: Add optional parameter `EnsureExists`.  
     When `true`, if the file or environment variable doesn't exist, a compile-time error is raised.  
     Otherwise, `DefaultValue` is used, or an empty string if not provided, as before.
