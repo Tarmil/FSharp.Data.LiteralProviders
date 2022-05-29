@@ -239,6 +239,35 @@ open FSharp.Data.LiteralProviders
 let [<Literal>] versionSuffix = String.IF<isMaster, "", "-pre">.Value
 ```
 
+Note that even though only one value is returned, both are evaluated.
+So if one branch fails, even though the other one is returned, the whole provider will fail.
+
+```fsharp
+open FSharp.Data.LiteralProviders
+
+let [<Literal>] isCI = Env<"CI", "false">.ValueAsBool
+
+// The following will fail, because when CI is false, GITHUB_REF_NAME is not defined.
+let [<Literal>] badRef =
+    String.IF<isCI,
+        Env.GITHUB_REF_NAME.Value,
+        const Exec<"git", "branch --current">.Value>.Value
+
+// Instead, make sure to use a version that never fails.
+// Here, Env returns an empty string if GITHUB_REF_NAME is not defined.
+let [<Literal>] goodRef =
+    String.IF<isCI,
+        Env<"GITHUB_REF_NAME">.Value,
+        const Exec<"git", "branch --current">.Value>.Value
+
+// Even better, avoid using IF if you can achieve the same result with default values.
+// For example, here, no need to check the CI variable:
+// GITHUB_REF_NAME is set iff compiling on Github Actions anyway.
+// So you can directly use GITHUB_REF_NAME, with `git branch` as default value.
+let [<Literal>] betterRef =
+    Env<"GITHUB_REF_NAME", const Exec<"git", "branch --current">.Value>.Value
+```
+
 ### BuildDate
 
 `FSharp.Data.LiteralProviders.BuildDate` contains the build time as a literal string in ISO-8601 format (["o" format](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings#Roundtrip)).
