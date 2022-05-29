@@ -5,6 +5,7 @@
 
 This is a collection of type providers that provide literals: compile-time constants that can be used in regular code, but also as parameters to other type providers or .NET attributes.
 
+<!-- doctoc --github README.md --maxlevel 2 --notitle -->
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
@@ -15,6 +16,7 @@ This is a collection of type providers that provide literals: compile-time const
 - [Conditionals](#conditionals)
 - [BuildDate](#builddate)
 - [Parsed value](#parsed-value)
+- [Packaging](#packaging)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -272,3 +274,35 @@ The following values are parsed this way:
 * `TextFile.Text`
 * `Exec.Output`
 * `Exec.Error`
+
+## Packaging
+
+FSharp.Data.LiteralProviders is a compile-time only package: all of its provided values are baked into the compiled assembly.
+This means that if you are writing a library that uses FSharp.Data.LiteralProviders, your downstream users don't need to depend on it.
+
+Here is how to exclude FSharp.Data.LiteralProviders from your NuGet dependencies.
+
+### Using NuGet
+
+If you are using `dotnet`'s built-in package management, then in your project file, replace the following:
+
+```xml
+<PackageReference Include="FSharp.Data.LiteralProviders" Version="..." />
+```
+
+with:
+
+```xml
+<PackageReference Include="FSharp.Data.LiteralProviders" Version="...">
+    <PrivateAssets>All</PrivateAssets>
+</PackageReference>
+```
+
+### Using Paket
+
+If you are packaging your library with `paket pack`, add the following to your `paket.template`:
+
+```
+excludeddependencies
+    FSharp.Data.LiteralProviders
+```
