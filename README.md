@@ -5,23 +5,32 @@
 
 This is a collection of type providers that provide literals: compile-time constants that can be used in regular code, but also as parameters to other type providers or .NET attributes.
 
-<!-- doctoc --github README.md --maxlevel 2 --notitle -->
+<!-- doctoc --github --notitle README.md -->
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 
-- [Env](#env)
-- [TextFile](#textfile)
-- [Exec](#exec)
-- [Conditionals](#conditionals)
-- [BuildDate](#builddate)
-- [Parsed value](#parsed-value)
+- [Reference](#reference)
+  - [Env](#env)
+  - [TextFile](#textfile)
+  - [Exec](#exec)
+  - [Conditionals](#conditionals)
+    - [Equality](#equality)
+    - [Comparison](#comparison)
+    - [Boolean operations](#boolean-operations)
+    - [If](#if)
+  - [BuildDate](#builddate)
+  - [Parsed value](#parsed-value)
 - [Tips for combining type providers](#tips-for-combining-type-providers)
 - [Packaging](#packaging)
+  - [Using NuGet](#using-nuget)
+  - [Using Paket](#using-paket)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## Env
+## Reference
+
+### Env
 
 `FSharp.Data.LiteralProviders.Env` contains literals for environment variables during compile time.
 
@@ -89,7 +98,7 @@ Additional parameters can be passed:
     let [<Literal>] connString = Env<"CONNECTION_STRING", EnsureExists = true>.Text
     ```
 
-## TextFile
+### TextFile
 
 `FSharp.Data.LiteralProviders.TextFile` contains literals that are read from text files during compilation.
 
@@ -148,7 +157,7 @@ Additional parameters can be passed:
     let [<Literal>] test = TextFile<"fileThatDoesntExist.txt", EnsureExists = true>.Text
     ```
 
-## Exec
+### Exec
 
 `FSharp.Data.LiteralProviders.Exec` executes an external program during compilation and captures its output.
 
@@ -179,11 +188,11 @@ The following values are provided:
 
 * `ExitCode: int`: the program's exit code. Only useful with `EnsureSuccess = false`, otherwise always 0.
 
-## Conditionals
+### Conditionals
 
 `FSharp.Data.LiteralProviders` contains sub-namespaces `String`, `Int` and `Bool` for conditional operations on these types.
 
-### Equality
+#### Equality
 
 The providers `EQ` and `NE` contain `Value: bool` that checks whether the two parameters are equal / not equal, respectively.
 
@@ -195,7 +204,7 @@ let [<Literal>] branch = Exec<"git", "branch --show-current">.Output
 let [<Literal>] isMaster = String.EQ<branch, "master">.Value
 ```
 
-### Comparison
+#### Comparison
 
 In sub-namespace `Int`, the providers `LT`, `LE`, `GT` and `GE` contain `Value: bool` that checks whether the first parameter is less than / less than or equal / greater than / greater than or equal to the second parameter, respectively.
 
@@ -207,7 +216,7 @@ let [<Literal>] gitStatusCode = Exec<"git", "status", EnsureSuccess = false>.Exi
 let [<Literal>] notInGitRepo = Int.GT<gitStatusCode, 0>.Value
 ```
 
-### Boolean operations
+#### Boolean operations
 
 In sub-namespace `Bool`, the providers `AND`, `OR`, `XOR` and `NOT` contain `Value: bool` that performs the corresponding boolean operation on its parameter(s).
 
@@ -219,7 +228,7 @@ type GithubAction = Env<"GITHUB_ACTION">
 let [<Literal>] isLocalBuild = Bool.NOT<GithubAction.IsSet>.Value
 ```
 
-### If
+#### If
 
 The provider `IF` takes a condition and two values as parameters.
 It returns the first value if the condition is true, and the second value if the condition is false.
@@ -230,7 +239,7 @@ open FSharp.Data.LiteralProviders
 let [<Literal>] versionSuffix = String.IF<isMaster, "", "-pre">.Value
 ```
 
-## BuildDate
+### BuildDate
 
 `FSharp.Data.LiteralProviders.BuildDate` contains the build time as a literal string in ISO-8601 format (["o" format](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings#Roundtrip)).
 
@@ -249,7 +258,7 @@ open FSharp.Data.LiteralProviders
 let buildTime = BuildDate<"hh:mm:ss">.Utc  // "21:45:03"
 ```
 
-## Parsed value
+### Parsed value
 
 The providers try to parse string values as integer and as boolean. If any of these succeed, a value suffixed with `AsInt` or `AsBool` is provided.
 
