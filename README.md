@@ -16,6 +16,7 @@ This is a collection of type providers that provide literals: compile-time const
 - [Conditionals](#conditionals)
 - [BuildDate](#builddate)
 - [Parsed value](#parsed-value)
+- [Tips for combining type providers](#tips-for-combining-type-providers)
 - [Packaging](#packaging)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -87,14 +88,6 @@ Additional parameters can be passed:
     /// Throws a compile-time error "Environment variable does not exist: CONNECTION_STRING".
     let [<Literal>] connString = Env<"CONNECTION_STRING", EnsureExists = true>.Text
     ```
-
-> Tip: to pass `Env` directly to another type provider without binding it as a `let [<Literal>]`, use the `const` operator:
->
-> ```fsharp
-> type Sql = SqlProvider<Common.DatabaseProviderTypes.MSSQLSERVER,
->                        const(Env<"CONNECTION_STRING",
->                                  "Server=localhost;Integrated Security=true">.Value)>
-> ```
 
 ## TextFile
 
@@ -274,6 +267,33 @@ The following values are parsed this way:
 * `TextFile.Text`
 * `Exec.Output`
 * `Exec.Error`
+
+## Tips for combining type providers
+
+One of the main use cases for FSharp.Data.LiteralProviders is to provide a literal to pass to another type provider. There are several ways to do so:
+
+* Declare each TP with a type alias:
+
+    ```fsharp
+    type ConnectionString = Env<"CONNECTION_STRING">
+    
+    type Sql = SqlProvider<Common.DatabaseProviderTypes.MSSQLSERVER, ConnectionString.Value>
+    ```
+
+* Declare a TP's value as Literal then pass it to another TP:
+
+    ```fsharp
+    let [<Literal>] ConnectionString = Env<"CONNECTION_STRING">.Value
+    
+    type Sql = SqlProvider<Common.DatabaseProviderTypes.MSSQLSERVER, ConnectionString>
+    ```
+
+* To use a TP entirely inside a parameter of another TP, prefix it with the keyword `const`:
+
+    ```fsharp
+    type Sql = SqlProvider<Common.DatabaseProviderTypes.MSSQLSERVER,
+                           const Env<"CONNECTION_STRING">.Value>
+    ```
 
 ## Packaging
 
