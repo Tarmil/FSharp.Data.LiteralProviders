@@ -5,15 +5,25 @@ open Swensen.Unquote
 open FSharp.Data.LiteralProviders
 
 [<Test>]
-let ``OS is either Windows_NT or Unix`` () =
-    test <@ [|"Windows_NT"; "Unix"|] |> Seq.contains Env.OS.Value @>
+let ``HOME is non-empty`` () =
+#if WINDOWS
+    test <@ Env.HOMEPATH.Value <> "" @>
+#else
+    test <@ Env.HOME.Value <> "" @>
+#endif
 
 [<Test>]
 let ``Random var from env file is available directly`` () =
     test <@ Env.RANDOM_VAR_FROM_ENV_FILE.Value = "some value" @>
 
-type ``OS without default`` = Env<"OS">
-type ``OS with default`` = Env<"OS", "Invalid">
+#if WINDOWS
+let [<Literal>] HOMENAME = "HOMEPATH"
+#else
+let [<Literal>] HOMENAME = "HOME"
+#endif
+
+type ``HOME without default`` = Env<HOMENAME>
+type ``HOME with default`` = Env<HOMENAME, "Invalid">
 type ``Random var from env file`` = Env<"RANDOM_VAR_FROM_ENV_FILE">
 type ``Random var not from env file`` = Env<"RANDOM_VAR_FROM_ENV_FILE", LoadEnvFile = false>
 
@@ -26,20 +36,20 @@ let ``Random var from env file with LoadEnvFile false is not set`` () =
     test <@ not ``Random var not from env file``.IsSet @>
 
 [<Test>]
-let ``OS without default is set`` () =
-    test <@ ``OS without default``.IsSet @>
+let ``HOME without default is set`` () =
+    test <@ ``HOME without default``.IsSet @>
 
 [<Test>]
-let ``OS with default is set`` () =
-    test <@ ``OS with default``.IsSet @>
+let ``HOME with default is set`` () =
+    test <@ ``HOME with default``.IsSet @>
 
 [<Test>]
-let ``OS without default is either Windows_NT or Unix`` () =
-    test <@ [|"Windows_NT"; "Unix"|] |> Seq.contains ``OS without default``.Value @>
+let ``HOME without default is non-empty`` () =
+    test <@ ``HOME without default``.Value <> "" @>
 
 [<Test>]
-let ``OS with default is either Windows_NT or Unix`` () =
-    test <@ [|"Windows_NT"; "Unix"|] |> Seq.contains ``OS with default``.Value @>
+let ``HOME with default is non-empty`` () =
+    test <@ ``HOME with default``.Value <> "" @>
 
 type ``Garbage without default`` = Env<"SomeGarbageVariableThatShouldntBeSet">
 type ``Garbage with default`` = Env<"SomeGarbageVariableThatShouldntBeSet", "some default value">
