@@ -55,13 +55,14 @@ let execute args =
     proc.OutputDataReceived.Add(fun e -> output.Append(e.Data) |> ignore)
     proc.ErrorDataReceived.Add(fun e -> error.Append(e.Data) |> ignore)
     proc.Start() |> ignore
+    let startTime = try proc.StartTime with _ -> DateTime.Now
     args.Input |> Option.iter proc.StandardInput.Write
     proc.BeginOutputReadLine()
     proc.BeginErrorReadLine()
     if not (proc.WaitForExit(args.Timeout)) then
         proc.Kill()
         proc.WaitForExit()
-        raise (ExecFailedException(-1, sprintf "Process timed out after %A" (proc.ExitTime - proc.StartTime)))
+        raise (ExecFailedException(-1, sprintf "Process timed out after %A" (proc.ExitTime - startTime)))
     proc.WaitForExit()
     if args.EnsureSuccess && proc.ExitCode <> 0 then
         raise (ExecFailedException(proc.ExitCode, sprintf "Process exited with status code %i" proc.ExitCode))
