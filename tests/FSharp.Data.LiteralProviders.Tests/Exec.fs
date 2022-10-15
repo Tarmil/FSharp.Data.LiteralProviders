@@ -10,8 +10,17 @@ type DotnetListReference = Exec<"dotnet", "list reference">
 let ``with success`` () =
     test <@ DotnetListReference.ExitCode = 0 @>
     test <@ DotnetListReference.Error = "" @>
-    test <@ DotnetListReference.Output.StartsWith("Project reference(s)") @>
-    test <@ DotnetListReference.Output.EndsWith(".fsproj") @>
+    test <@ DotnetListReference.Output =
+                ([ @"Project reference(s)"
+                   @"--------------------"
+                   @"..\..\src\FSharp.Data.LiteralProviders.Runtime\FSharp.Data.LiteralProviders.Runtime.fsproj" ]
+                |> String.concat System.Environment.NewLine) @>
+
+type DotnetVersion = Exec<"dotnet", "--version">
+
+[<Test>]
+let ``single line excludes newline`` () =
+    test <@ not <| DotnetVersion.Output.Contains("\n") @>
 
 type DotnetListError = Exec<"dotnet", "list whatever">
 
