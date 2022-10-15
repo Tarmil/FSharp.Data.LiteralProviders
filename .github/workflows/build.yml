@@ -8,7 +8,11 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -34,19 +38,23 @@ jobs:
           dotnet tool restore
           dotnet paket restore
           dotnet build -c release
+        shell: pwsh
 
       - name: Test
         run: dotnet test --no-build -c release --logger trx --results-directory $PWD/bin/testresults
+        shell: pwsh
 
       - name: Pack
         run: |
           dotnet paket pack $PWD/bin/nuget --version (dotnet nbgv get-version -v SemVer2)
+        shell: pwsh
 
       - name: Upload nupkg
         uses: actions/upload-artifact@v1
         with:
           name: nuget
           path: bin/nuget
+        if: ${{ matrix.os == 'ubuntu-latest' }}
 
       - name: Report tests
         uses: dorny/test-reporter@v1
