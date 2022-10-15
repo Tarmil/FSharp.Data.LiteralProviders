@@ -62,7 +62,8 @@ let execute args =
         proc.Kill()
         proc.WaitForExit()
         raise (ExecFailedException(-1, sprintf "Process timed out after %A" (proc.ExitTime - proc.StartTime)))
-    elif args.EnsureSuccess && proc.ExitCode <> 0 then
+    proc.WaitForExit()
+    if args.EnsureSuccess && proc.ExitCode <> 0 then
         raise (ExecFailedException(proc.ExitCode, sprintf "Process exited with status code %i" proc.ExitCode))
     else
         { Output = output.ToString()
