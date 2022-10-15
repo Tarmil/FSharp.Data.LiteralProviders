@@ -1,49 +1,50 @@
 ﻿module Tests.Exec
 
 open NUnit.Framework
+open Swensen.Unquote
 open FSharp.Data.LiteralProviders
 
 type DotnetListReference = Exec<"dotnet", "list reference">
 
 [<Test>]
 let ``with success`` () =
-    Assert.AreEqual(0, DotnetListReference.ExitCode)
-    Assert.IsEmpty(DotnetListReference.Error)
-    Assert.StartsWith("Project reference(s)", DotnetListReference.Output)
-    Assert.EndsWith(".fsproj", DotnetListReference.Output)
+    test <@ DotnetListReference.ExitCode = 0 @>
+    test <@ DotnetListReference.Error = "" @>
+    test <@ DotnetListReference.Output.StartsWith("Project reference(s)") @>
+    test <@ DotnetListReference.Output.EndsWith(".fsproj") @>
 
 type DotnetListError = Exec<"dotnet", "list whatever">
 
 [<Test>]
 let ``with error code`` () =
-    Assert.AreEqual(1, DotnetListError.ExitCode)
-    Assert.AreEqual("Process exited with status code 1", DotnetListError.ErrorMessage)
+    test <@ DotnetListError.ExitCode = 1 @>
+    test <@ DotnetListError.ErrorMessage = "Process exited with status code 1" @>
 
 type DotnetListErrorAllowed = Exec<"dotnet", "list whatever", EnsureSuccess = false>
 
 [<Test>]
 let ``with EnsureSuccess false`` () =
-    Assert.AreEqual(1, DotnetListErrorAllowed.ExitCode)
-    Assert.IsNotEmpty(DotnetListErrorAllowed.Error)
+    test <@  DotnetListErrorAllowed.ExitCode = 1 @>
+    test <@ DotnetListErrorAllowed.Error <> "" @>
 
 type DotnetListTimeout = Exec<"dotnet", "list reference", Timeout = 1>
 
 [<Test>]
 let ``with timeout`` () =
-    Assert.AreEqual(-1, DotnetListTimeout.ExitCode)
-    Assert.StartsWith("Process timed out after ", DotnetListTimeout.ErrorMessage)
+    test <@ DotnetListTimeout.ExitCode = -1 @>
+    test <@ DotnetListTimeout.ErrorMessage.StartsWith("Process timed out after ") @>
 
 type DotnetSln = Exec<"dotnet", "sln list", Directory = "../..">
 
 [<Test>]
 let ``with directory`` () =
-    Assert.IsNotEmpty(DotnetSln.Output)
-    Assert.IsEmpty(DotnetSln.Error)
-    Assert.AreEqual(0, DotnetSln.ExitCode)
+    test <@ DotnetSln.Output <> "" @>
+    test <@ DotnetSln.Error = "" @>
+    test <@ DotnetSln.ExitCode = 0 @>
 
 type DotnetSlnError = Exec<"dotnet", "sln list", Directory = ".">
 
 [<Test>]
 let ``with directory failure`` () =
-    Assert.AreEqual(1, DotnetSlnError.ExitCode)
-    Assert.AreEqual("Process exited with status code 1", DotnetSlnError.ErrorMessage)
+    test <@ DotnetSlnError.ExitCode = 1 @>
+    test <@ DotnetSlnError.ErrorMessage = "Process exited with status code 1" @>

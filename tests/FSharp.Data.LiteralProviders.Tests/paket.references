@@ -1,3 +1,4 @@
 group Test
+Unquote
 NUnit
 FSharp.Core

@@ -7,8 +7,8 @@ NUGET
     FSharp.Core (4.5)
 GITHUB
   remote: fsprojects/FSharp.TypeProviders.SDK
-    src/ProvidedTypes.fs (add1d43349c420e659a731268b64afa212ef3329)
-    src/ProvidedTypes.fsi (add1d43349c420e659a731268b64afa212ef3329)
+    src/ProvidedTypes.fs (6ad1174db0794a348f4a1c0aa5a60ae3f1803810)
+    src/ProvidedTypes.fsi (6ad1174db0794a348f4a1c0aa5a60ae3f1803810)
 GROUP Test
 STORAGE: NONE
 RESTRICTION: || (== net472) (== net6.0)
@@ -34,3 +34,5 @@ NUGET
     NUnit.Extension.TeamCityEventListener (1.0.7)
     NUnit.Extension.VSProjectLoader (3.9)
     NUnit3TestAdapter (4.2.0) - version_in_path: true
+    Unquote (6.1)
+      FSharp.Core (>= 4.7.2)

@@ -2,23 +2,24 @@
 
 open System.IO
 open NUnit.Framework
+open Swensen.Unquote
 open FSharp.Data.LiteralProviders
 
 [<Test>]
 let ``File in base dir exists`` () =
-    Assert.AreEqual("TextFile.fs", TextFile.``TextFile.fs``.Name)
+    test <@ TextFile.``TextFile.fs``.Name = "TextFile.fs" @>
 
 [<Test>]
 let ``File in subdir exists`` () =
-    Assert.AreEqual("textFile.txt", TextFile.subdir.``textFile.txt``.Name)
+    test <@ TextFile.subdir.``textFile.txt``.Name = "textFile.txt" @>
 
 [<Test>]
 let ``Full path is correct`` () =
-    Assert.AreEqual(Path.Combine(__SOURCE_DIRECTORY__, "subdir", "textFile.txt"), TextFile.subdir.``textFile.txt``.Path)
+    test <@ TextFile.subdir.``textFile.txt``.Path = Path.Combine(__SOURCE_DIRECTORY__, "subdir", "textFile.txt") @>
 
 [<Test>]
 let ``Text file is read`` () =
-    Assert.AreEqual("This is some\ntext content.", TextFile.subdir.``textFile.txt``.Text)
+    test <@ TextFile.subdir.``textFile.txt``.Text = "This is some\ntext content." @>
 
 [<Test>]
 let ``Binary file is recognized as not text`` () =
@@ -29,70 +30,70 @@ type ``Text file with default`` = TextFile<"subdir/textFile.txt", "Invalid">
 
 [<Test>]
 let ``Text file without default exists`` () =
-    Assert.IsTrue(``Text file without default``.Exists)
+    test <@ ``Text file without default``.Exists @>
 
 [<Test>]
 let ``Text file with default exists`` () =
-    Assert.IsTrue(``Text file with default``.Exists)
+    test <@ ``Text file with default``.Exists @>
 
 [<Test>]
 let ``Text file without default contents`` () =
-    Assert.AreEqual("This is some\ntext content.", ``Text file without default``.Text)
+    test <@ ``Text file without default``.Text = "This is some\ntext content." @>
 
 [<Test>]
 let ``Text file with default contents`` () =
-    Assert.AreEqual("This is some\ntext content.", ``Text file with default``.Text)
+    test <@ ``Text file with default``.Text = "This is some\ntext content." @>
 
 type ``Non-existent without default`` = TextFile<"NonExistentFile.txt">
 type ``Non-existent with default`` = TextFile<"NonExistentFile.txt", "default contents">
 
 [<Test>]
 let ``Non-existent without default doesn't exist`` () =
-    Assert.IsFalse(``Non-existent without default``.Exists)
+    test <@ not ``Non-existent without default``.Exists @>
 
 [<Test>]
 let ``Non-existent without default is empty string`` () =
-    Assert.AreEqual("", ``Non-existent without default``.Text)
+    test <@  ``Non-existent without default``.Text = "" @>
 
 [<Test>]
 let ``Non-existent with default doesn't exist`` () =
-    Assert.IsFalse(``Non-existent with default``.Exists)
+    test <@ not ``Non-existent with default``.Exists @>
 
 [<Test>]
 let ``Non-existent with default is default value`` () =
-    Assert.AreEqual("default contents", ``Non-existent with default``.Text)
+    test <@ ``Non-existent with default``.Text = "default contents" @>
 
 type WithBom = TextFile<"subdir/textFileWithBom.txt", Encoding = "UTF-16-le">
 type WithoutBom = TextFile<"subdir/textFileWithoutBom.txt", Encoding = "UTF-16-le">
 
 [<Test>]
 let ``Regression #12 - Strip BOM`` () =
-    Assert.IsTrue(WithBom.HasBom)
-    Assert.AreEqual("Test content", WithBom.Text)
-    Assert.IsFalse(WithoutBom.HasBom)
-    Assert.AreEqual("Test content", WithoutBom.Text)
+    test <@ WithBom.HasBom @>
+    test <@ WithBom.Text = "Test content" @>
+    test <@ not WithoutBom.HasBom @>
+    test <@ WithoutBom.Text = "Test content" @>
 
 [<Test>]
 let ``Parent directory`` () =
-    Assert.AreEqual("This is some\ntext content.", TextFile.``..``.``parentTextFile.txt``.Text)
+    test <@ TextFile.``..``.``parentTextFile.txt``.Text = "This is some\ntext content." @>
 
 [<Test>]
 let ``Parent of subdirectory`` () =
-    Assert.AreEqual("TextFile.fs", TextFile.subdir.``..``.``TextFile.fs``.Name)
+    test <@ TextFile.subdir.``..``.``TextFile.fs``.Name = "TextFile.fs" @>
 
 [<Test>]
 let ``Parent of parent directory`` () =
-    Assert.AreEqual("This is some\ntext content.", TextFile.subdir.``..``.``..``.``parentTextFile.txt``.Text)
+    test <@ TextFile.subdir.``..``.``..``.``parentTextFile.txt``.Text = "This is some\ntext content." @>
 
 // Uncomment below to test EnsureExists
 // type EnsureExists = TextFile<"doesntexist.txt", EnsureExists = true>
 
 [<Test>]
 let ``Text as int`` () =
-    Assert.AreEqual(42, TextFile.subdir.``number.txt``.TextAsInt)
-    Assert.AreEqual(42, TextFile<"subdir/number.txt">.TextAsInt)
+    test <@ TextFile.subdir.``number.txt``.TextAsInt = 42 @>
+    test <@ TextFile<"subdir/number.txt">.TextAsInt = 42 @>
 
 [<Test>]
 let ``Text as bool`` () =
-    Assert.IsTrue(TextFile.subdir.``boolean.txt``.TextAsBool)
-    Assert.IsTrue(TextFile<"subdir/boolean.txt">.TextAsBool)
+    test <@ TextFile.subdir.``boolean.txt``.TextAsBool @>
+    test <@ TextFile<"subdir/boolean.txt">.TextAsBool @>

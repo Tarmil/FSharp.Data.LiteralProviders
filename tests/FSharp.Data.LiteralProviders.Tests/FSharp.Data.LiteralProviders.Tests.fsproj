@@ -8,7 +8,6 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Assert.fs" />
     <Compile Include="Env.fs" />
     <Compile Include="TextFile.fs" />
     <Compile Include="BuildDate.fs" />
