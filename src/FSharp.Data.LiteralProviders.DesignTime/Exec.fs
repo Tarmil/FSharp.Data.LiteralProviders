@@ -41,6 +41,28 @@ let (|Args|_|) baseDir (args: obj[]) =
         |> Some
     | _ -> None
 
+type OutputLineState =
+    | FirstLine
+    | SubsequentLine of lastLineWasEmpty: bool
+
+/// We want to include all newlines except the final one, if any.
+let readOutput (event: IEvent<DataReceivedEventHandler, DataReceivedEventArgs>) =
+    let output = StringBuilder()
+    event
+    |> Event.filter (fun e -> not (isNull e.Data))
+    |> Event.scan (fun lineState e ->
+        let thisLineIsEmpty = e.Data = ""
+        match lineState with
+        | FirstLine ->
+            output.Append(e.Data) |> ignore
+        | SubsequentLine lastLineWasEmpty when lastLineWasEmpty || not thisLineIsEmpty ->
+            output.AppendLine().Append(e.Data) |> ignore
+        | SubsequentLine _ -> ()
+        SubsequentLine thisLineIsEmpty
+    ) FirstLine
+    |> Event.add ignore
+    output
+
 let execute args =
     let proc = new Process()
     proc.StartInfo.UseShellExecute <- false
@@ -50,10 +72,8 @@ let execute args =
     proc.StartInfo.RedirectStandardInput <- true
     proc.StartInfo.RedirectStandardOutput <- true
     proc.StartInfo.RedirectStandardError <- true
-    let output = StringBuilder()
-    let error = StringBuilder()
-    proc.OutputDataReceived.Add(fun e -> output.Append(e.Data) |> ignore)
-    proc.ErrorDataReceived.Add(fun e -> error.Append(e.Data) |> ignore)
+    let output = readOutput proc.OutputDataReceived
+    let error = readOutput proc.ErrorDataReceived
     proc.Start() |> ignore
     let startTime = try proc.StartTime with _ -> DateTime.Now
     args.Input |> Option.iter proc.StandardInput.Write
