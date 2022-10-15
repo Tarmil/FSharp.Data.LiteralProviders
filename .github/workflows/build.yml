@@ -60,7 +60,7 @@ jobs:
         uses: dorny/test-reporter@v1
         if: always()
         with:
-          name: Unit tests
+          name: Unit tests (${{ matrix.os }})
           path: bin/testresults/*.trx
           reporter: dotnet-trx
 
