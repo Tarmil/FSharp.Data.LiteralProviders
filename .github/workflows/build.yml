@@ -50,7 +50,7 @@ jobs:
         shell: pwsh
 
       - name: Upload nupkg
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4.4.0
         with:
           name: nuget
           path: bin/nuget
