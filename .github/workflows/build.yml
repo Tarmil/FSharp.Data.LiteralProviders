@@ -13,6 +13,7 @@ jobs:
         os: [windows-latest, ubuntu-latest, macos-latest]
       fail-fast: false
     runs-on: ${{ matrix.os }}
+    permissions: write-all
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -20,7 +21,7 @@ jobs:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '6.0.100'
+          dotnet-version: '6.0.300'
 
       - name: NuGet cache
         uses: actions/cache@v1
@@ -50,7 +51,7 @@ jobs:
         shell: pwsh
 
       - name: Upload nupkg
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4.4.0
         with:
           name: nuget
           path: bin/nuget
@@ -72,10 +73,10 @@ jobs:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '6.0.100'
+          dotnet-version: '6.0.300'
 
       - name: Download nupkg
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v4.1.7
         with:
           name: nuget
 
@@ -96,7 +97,7 @@ jobs:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '6.0.100'
+          dotnet-version: '6.0.300'
 
       - name: Prepare
         run: |
