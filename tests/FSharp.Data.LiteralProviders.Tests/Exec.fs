@@ -6,15 +6,18 @@ open FSharp.Data.LiteralProviders
 
 type DotnetListReference = Exec<"dotnet", "list reference">
 
+/// Equal up to newline and path separator.
+let (=~) (s1: string) (s2: string) =
+    s1.Replace("/", "\\").Replace("\r\n", "\n") = s2.Replace("/", "\\").Replace("\r\n", "\n")
+
 [<Test>]
 let ``with success`` () =
     test <@ DotnetListReference.ExitCode = 0 @>
     test <@ DotnetListReference.Error = "" @>
-    test <@ DotnetListReference.Output =
-                ([ @"Project reference(s)"
-                   @"--------------------"
-                   @"..\..\src\FSharp.Data.LiteralProviders.Runtime\FSharp.Data.LiteralProviders.Runtime.fsproj" ]
-                |> String.concat System.Environment.NewLine) @>
+    test <@ DotnetListReference.Output =~ "\
+Project reference(s)
+--------------------
+../../src/FSharp.Data.LiteralProviders.Runtime/FSharp.Data.LiteralProviders.Runtime.fsproj" @>
 
 type DotnetVersion = Exec<"dotnet", "--version">
 
