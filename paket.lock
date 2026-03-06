@@ -4,11 +4,11 @@ NUGET
   remote: https://api.nuget.org/v3/index.json
     DotEnvFile (2.1)
       FSharp.Core (>= 4.1)
-    FSharp.Core (4.5)
+    FSharp.Core (6.0)
 GITHUB
   remote: fsprojects/FSharp.TypeProviders.SDK
-    src/ProvidedTypes.fs (6ad1174db0794a348f4a1c0aa5a60ae3f1803810)
-    src/ProvidedTypes.fsi (6ad1174db0794a348f4a1c0aa5a60ae3f1803810)
+    src/ProvidedTypes.fs (b4721c1cdffd1485006bf66f505f35b7a2e37955)
+    src/ProvidedTypes.fsi (b4721c1cdffd1485006bf66f505f35b7a2e37955)
 GROUP Test
 STORAGE: NONE
 RESTRICTION: || (== net472) (== net6.0)

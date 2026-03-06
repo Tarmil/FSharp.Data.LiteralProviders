@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\netfx.props" />
   <PropertyGroup>
     <TargetFrameworks>net6.0;net472</TargetFrameworks>
     <IsPackable>false</IsPackable>
