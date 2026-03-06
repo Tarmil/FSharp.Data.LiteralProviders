@@ -42,7 +42,9 @@ jobs:
         shell: pwsh
 
       - name: Test
-        run: dotnet test --no-build -c release --logger trx --results-directory $PWD/bin/testresults
+        run: |
+          $testargs = if ("${{matrix.os}}" -eq "windows-latest") { @() } else { @("--framework", "net6.0") }
+          dotnet test --no-build -c release --logger trx @testargs --results-directory $PWD/bin/testresults
         shell: pwsh
 
       - name: Pack
