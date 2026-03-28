@@ -5,7 +5,7 @@ open NUnit.Framework
 open Swensen.Unquote
 open FSharp.Data.LiteralProviders
 
-let matchRegex regex text =
+let matchRegex regex (text: string) =
     Regex(regex, RegexOptions.Singleline).IsMatch(text)
 
 [<Test>]

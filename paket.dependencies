@@ -10,9 +10,10 @@ github fsprojects/FSharp.TypeProviders.SDK src/ProvidedTypes.fs
 
 group Test
 source https://api.nuget.org/v3/index.json
-frameworks: net472, net6.0
+frameworks: net472, net8.0
 storage: none
 
+nuget Microsoft.NET.Test.Sdk
 nuget NUnit
 nuget NUnit.Console
 nuget NUnit3TestAdapter version_in_path: true
