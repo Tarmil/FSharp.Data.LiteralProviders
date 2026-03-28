@@ -42,7 +42,7 @@ jobs:
 
       - name: Test
         run: |
-          $testargs = if ("${{matrix.os}}" -eq "windows-latest") { @() } else { @("--framework", "net6.0") }
+          $testargs = if ("${{matrix.os}}" -eq "windows-latest") { @() } else { @("--framework", "net8.0") }
           dotnet test --no-build -c release --logger trx @testargs --results-directory $PWD/bin/testresults
         shell: pwsh
 
