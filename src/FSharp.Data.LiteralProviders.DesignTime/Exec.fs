@@ -77,6 +77,7 @@ let execute args =
     proc.Start() |> ignore
     let startTime = try proc.StartTime with _ -> DateTime.Now
     args.Input |> Option.iter proc.StandardInput.Write
+    proc.StandardInput.Close()
     proc.BeginOutputReadLine()
     proc.BeginErrorReadLine()
     if not (proc.WaitForExit(args.Timeout)) then

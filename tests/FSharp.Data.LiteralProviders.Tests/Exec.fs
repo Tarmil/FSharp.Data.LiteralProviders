@@ -60,3 +60,10 @@ type DotnetSlnError = Exec<"dotnet", "sln list", Directory = ".">
 let ``with directory failure`` () =
     test <@ DotnetSlnError.ExitCode = 1 @>
     test <@ DotnetSlnError.ErrorMessage = "Process exited with status code 1" @>
+
+type EchoHello = Exec<"echo", "hello">
+
+[<Test>]
+let ``stdout is captured`` () =
+    test <@ EchoHello.Output = "hello" @>
+    test <@ EchoHello.ExitCode = 0 @>
