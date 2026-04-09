@@ -16,8 +16,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     permissions:
       contents: read
-      actions: read
-      checks: write
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -63,13 +61,12 @@ jobs:
           path: bin/nuget
         if: ${{ matrix.os == 'ubuntu-latest' }}
 
-      - name: Report tests
-        uses: dorny/test-reporter@v1
-        if: always()
+      - name: Upload test results
+        uses: actions/upload-artifact@v4.4.0
+        if: ${{ !cancelled() }}
         with:
-          name: Unit tests (${{ matrix.os }})
-          path: bin/testresults/*.trx
-          reporter: dotnet-trx
+          name: test-results-${{ matrix.os }}
+          path: bin/testresults
 
   prerelease:
     runs-on: ubuntu-latest
