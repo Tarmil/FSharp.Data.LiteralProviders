@@ -16,6 +16,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     permissions:
       contents: read
+      actions: read
       checks: write
     steps:
       - name: Checkout
@@ -76,6 +77,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' }}
     permissions:
       contents: read
+      actions: read
       packages: write
     steps:
       - name: Setup dotnet
@@ -100,6 +102,7 @@ jobs:
     if: ${{ contains(github.ref, 'releases') }}
     permissions:
       contents: write
+      actions: read
     steps:
       - name: Checkout
         uses: actions/checkout@v1
