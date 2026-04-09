@@ -25,5 +25,5 @@ jobs:
         with:
           artifact: test-results-${{ matrix.os }}
           name: Unit tests (${{ matrix.os }})
-          path: bin/testresults/*.trx
+          path: *.trx
           reporter: dotnet-trx
