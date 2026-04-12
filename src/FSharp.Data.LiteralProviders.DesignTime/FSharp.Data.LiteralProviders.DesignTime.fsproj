@@ -22,7 +22,9 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Value.fs" />
     <Compile Include="Env.fs" />
+    <Compile Include="FileSystem.fs" />
     <Compile Include="TextFile.fs" />
+    <Compile Include="JsonFile.fs" />
     <Compile Include="BuildDate.fs" />
     <Compile Include="Exec.fs" />
     <Compile Include="Conditional.fs" />

@@ -33,7 +33,7 @@ let private stripBom (encoding: Encoding) (bytes: byte[]) =
 let private errorMember error =
     ProvidedProperty("Not a text file", typeof<string>, (fun _ -> <@@ "" @@>), isStatic = true)
 
-let private addFileMembers (ty: ProvidedTypeDefinition) (path: string) (name: string) (encodings: EncodingsResult) =
+let private addFileMembers (encodings: EncodingsResult) (ty: ProvidedTypeDefinition) (path: string) (name: string) =
     ty.AddMembersDelayed<MemberInfo>(fun () ->
         match encodings with
         | Ok encodings ->
@@ -58,27 +58,6 @@ let private addFileMembers (ty: ProvidedTypeDefinition) (path: string) (name: st
         | Error error ->
             [ errorMember error ])
 
-let createFile asm ns baseDir =
-    let createForFile (path: string) : ProvidedTypeDefinition =
-        let name = Path.GetFileName path
-        let ty = ProvidedTypeDefinition(name, None)
-        addFileMembers ty path name (Ok allEncodings)
-        ty
-
-    let rec createForDir (path: string) (name: string option) : ProvidedTypeDefinition =
-        let ty =
-            match name with
-            | None -> ProvidedTypeDefinition(asm, ns, "TextFile", None)
-            | Some name -> ProvidedTypeDefinition(name, None)
-        ty.AddMembersDelayed(fun () ->
-            [ for f in Directory.GetFiles(path) do createForFile f
-              for d in Directory.GetDirectories(path) do createForDir d (Some (Path.GetFileName d))
-              let parent = Path.GetDirectoryName(path)
-              if parent <> path then createForDir parent (Some "..") ])
-        ty
-
-    createForDir baseDir None
-
 let addFileOrDefault asm ns baseDir (ty: ProvidedTypeDefinition) =
     ty.DefineStaticParameters(
         [ ProvidedStaticParameter("Path", typeof<string>)
@@ -95,7 +74,7 @@ let addFileOrDefault asm ns baseDir (ty: ProvidedTypeDefinition) =
                 ProvidedField.Literal("Exists", typeof<bool>, exists) |> ty.AddMember
                 if exists then
                     let encodings = getEncodings encoding
-                    addFileMembers ty path name encodings
+                    addFileMembers encodings ty path name
                 elif ensureExists then
                     failwithf "File does not exist: %s" path
                 else
@@ -108,5 +87,5 @@ let addFileOrDefault asm ns baseDir (ty: ProvidedTypeDefinition) =
     ty
 
 let create asm ns baseDir =
-    createFile asm ns baseDir
+    FileSystem.createFile "TextFile" asm ns baseDir "*" (addFileMembers (Ok allEncodings))
     |> addFileOrDefault asm ns baseDir

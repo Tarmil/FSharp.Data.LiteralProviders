@@ -13,11 +13,12 @@ type Provider(config) as this =
 
     do
         [ yield EnvProvider.create asm ns config.ResolutionFolder
+          yield JsonFileProvider.create asm ns config.ResolutionFolder
           yield TextFileProvider.create asm ns config.ResolutionFolder
           yield BuildDateProvider.create asm ns
           yield ExecProvider.create asm ns config.ResolutionFolder
           yield! ConditionalProvider.create asm ns ]
-        |> List.groupBy (fun t -> t.Namespace)
+        |> List.groupBy _.Namespace
         |> List.iter this.AddNamespace
 
 [<assembly:TypeProviderAssembly>]
