@@ -11,11 +11,13 @@
   <ItemGroup>
     <Compile Include="Env.fs" />
     <Compile Include="TextFile.fs" />
+    <Compile Include="JsonFile.fs" />
     <Compile Include="BuildDate.fs" />
     <Compile Include="Exec.fs" />
     <Compile Include="Conditional.fs" />
     <Content Include=".env" />
     <Content Include="subdir\*.*" />
+    <Content Include="test.json" />
     <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>

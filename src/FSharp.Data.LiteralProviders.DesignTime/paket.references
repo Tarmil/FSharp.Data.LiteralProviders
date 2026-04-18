@@ -1,4 +1,5 @@
 FSharp.Core
 DotEnvFile
+System.Text.Json
 File:ProvidedTypes.fsi
 File:ProvidedTypes.fs

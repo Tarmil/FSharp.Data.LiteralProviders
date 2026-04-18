@@ -23,6 +23,7 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="FSharp.Data.LiteralProviders.Runtime.fs" />
     <None Include="paket.references" />
+    <Content Include="paket.template" />
   </ItemGroup>
   <Target Name="BeforeBuild">
     <MSBuild Projects="..\FSharp.Data.LiteralProviders.DesignTime\FSharp.Data.LiteralProviders.DesignTime.fsproj" Targets="Restore" />
